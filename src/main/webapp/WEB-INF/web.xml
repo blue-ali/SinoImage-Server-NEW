@@ -1,128 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="WebApp_ID" version="2.5">
-	<display-name>SinoCM</display-name>
-	<context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>/WEB-INF/classes/resources/log4j/log4j.properties</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>SinoImage-Server</display-name>
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>/WEB-INF/classes/resources/log4j/log4j.properties</param-value>
+  </context-param>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
 			classpath:resources/spring/applicationContext*.xml
 		</param-value>
-	</context-param>
-
-	<listener>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
-
-
-	<!-- CM服务Servlet -->
-<!--
-	<servlet>
-		<servlet-name>FileDownload</servlet-name>
-		<servlet-class>com.tigera.document.net.FileDownload</servlet-class>
-	</servlet>
-	
-	<servlet>
-		<servlet-name>ServerGetServerList</servlet-name>
-		<servlet-class>com.tigera.document.net.ServerGetServerList</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>ServerGetServerInfo</servlet-name>
-		<servlet-class>com.tigera.document.net.ServerGetServerInfo</servlet-class>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>FileDownload</servlet-name>
-		<url-pattern>/FileDownload</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>ServerGetServerList</servlet-name>
-		<url-pattern>/ServerGetServerList</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ServerGetServerInfo</servlet-name>
-		<url-pattern>/ServerGetServerInfo</url-pattern>
-	</servlet-mapping> -->
-	
-	<servlet>
-		<servlet-name>FileLength</servlet-name>
-		<servlet-class>cn.net.sinodata.cm.controller.FileGetTransferedLength</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>FileLength</servlet-name>
-		<url-pattern>/FileLength</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>serverGetServerInfo</servlet-name>
-		<servlet-class>com.tigera.document.net.ServerGetServerInfo</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>serverGetServerInfo</servlet-name>
-		<url-pattern>/ServerGetServerInfo</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>serverGetServerList</servlet-name>
-		<servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>serverGetServerList</servlet-name>
-		<url-pattern>/ServerGetServerList</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<display-name>AddBatchService</display-name>
-		<servlet-name>addBatchService</servlet-name>
-		<servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>addBatchService</servlet-name>
-		<url-pattern>/FileUpload</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<display-name>getBatch</display-name>
-		<servlet-name>getBatchService</servlet-name>
-		<servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>getBatchService</servlet-name>
-		<url-pattern>/FileDownload</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<display-name>downloadFile</display-name>
-		<servlet-name>downloadFileService</servlet-name>
-		<servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>downloadFileService</servlet-name>
-		<url-pattern>/DownloadFile</url-pattern>
-	</servlet-mapping>
-
-	<!-- 初始化服务Servlet -->
-	<servlet>
-		<servlet-name>InitServerContext</servlet-name>
-		<servlet-class>cn.net.sinodata.framework.servlet.ServerInitServlet</servlet-class>
-		<init-param>
-			<param-name>initService</param-name>
-			<param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>FileLength</servlet-name>
+    <servlet-class>cn.net.sinodata.cm.controller.FileGetTransferedLength</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileLength</servlet-name>
+    <url-pattern>/FileLength</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>serverGetServerInfo</servlet-name>
+    <servlet-class>com.tigera.document.net.ServerGetServerInfo</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>serverGetServerInfo</servlet-name>
+    <url-pattern>/ServerGetServerInfo</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>serverGetServerList</servlet-name>
+    <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>serverGetServerList</servlet-name>
+    <url-pattern>/ServerGetServerList</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <display-name>AddBatchService</display-name>
+    <servlet-name>addBatchService</servlet-name>
+    <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>addBatchService</servlet-name>
+    <url-pattern>/FileUpload</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <display-name>getBatch</display-name>
+    <servlet-name>getBatchService</servlet-name>
+    <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>getBatchService</servlet-name>
+    <url-pattern>/FileDownload</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <display-name>downloadFile</display-name>
+    <servlet-name>downloadFileService</servlet-name>
+    <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>downloadFileService</servlet-name>
+    <url-pattern>/DownloadFile</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>InitServerContext</servlet-name>
+    <servlet-class>cn.net.sinodata.framework.servlet.ServerInitServlet</servlet-class>
+    <init-param>
+      <param-name>initService</param-name>
+      <param-value>
 				cn.net.sinodata.cm.init.InitializeService
 			</param-value>
-		</init-param>
-		<load-on-startup>10</load-on-startup>
-	</servlet>
-
-	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>
+    </init-param>
+    <load-on-startup>10</load-on-startup>
+  </servlet>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
 </web-app>
