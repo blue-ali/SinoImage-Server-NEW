@@ -33,5 +33,5 @@ public class BaseServletService extends HttpServlet {
 	@Resource
 	protected IContentManagerService manageService;
 
-	protected ResultInfo result = new ResultInfo();
+	protected ThreadLocal<ResultInfo> result = new ThreadLocal<ResultInfo>();
 }

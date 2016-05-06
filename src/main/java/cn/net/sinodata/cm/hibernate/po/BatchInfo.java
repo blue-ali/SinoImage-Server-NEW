@@ -15,11 +15,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
+import cn.net.sinodata.cm.pb.ProtoBufInfo.ETransModel;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgBatchInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgFileInfo;
 import cn.net.sinodata.cm.util.DateFormatUtil;
 import cn.net.sinodata.cm.util.Util;
-import cn.net.sinodata.framework.util.StringUtil;
 
 @Entity
 @Table(name = "cm_batch_info")
@@ -47,21 +47,13 @@ public class BatchInfo implements Serializable {
 	/** 创建人 */
 	@Column(name = "creator")
 	private String creator;
-	/** 来源IP */
-	@Transient
-	private String sourceIp;
 	/** 批次状态 */
+	@Column(name = "state")
+	private int state;
+	/** 传输模式 */
 	@Transient
-	private String state;
-	/** 同步状态 */
-	@Transient
-	private String syncState;
-	/** 同步类型 */
-	@Transient
-	private String syncType;
-	/** 同步时间 **/
-	@Transient
-	private String syncTime;
+	private ETransModel transModel;
+	/** 密码 */
 	@Transient
 	private String password;
 	/** 包含的文件，用于JCR持久化 */
@@ -118,44 +110,12 @@ public class BatchInfo implements Serializable {
 		this.creator = creator;
 	}
 
-	public String getSourceIp() {
-		return sourceIp;
-	}
-
-	public void setSourceIp(String sourceIp) {
-		this.sourceIp = sourceIp;
-	}
-
-	public String getState() {
+	public int getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(int state) {
 		this.state = state;
-	}
-
-	public String getSyncState() {
-		return syncState;
-	}
-
-	public void setSyncState(String syncState) {
-		this.syncState = syncState;
-	}
-
-	public String getSyncType() {
-		return syncType;
-	}
-
-	public void setSyncType(String syncType) {
-		this.syncType = syncType;
-	}
-
-	public String getSyncTime() {
-		return syncTime;
-	}
-
-	public void setSyncTime(String syncTime) {
-		this.syncTime = syncTime;
 	}
 
 	public List<FileInfo> getFileInfos() {
@@ -190,6 +150,14 @@ public class BatchInfo implements Serializable {
 		this.password = password;
 	}
 
+	public ETransModel getTransModel() {
+		return transModel;
+	}
+
+	public void setTransModel(ETransModel transModel) {
+		this.transModel = transModel;
+	}
+
 	public static BatchInfo fromNetMsg(MsgBatchInfo input) throws ParseException {
 		BatchInfo batchInfo = new BatchInfo();
 		// ret.setAuthor(input.getAuthor());
@@ -201,11 +169,11 @@ public class BatchInfo implements Serializable {
 		// GlobalVars.client_date_format));
 		batchInfo.setLastModified(new Date()); // TODO 控件现在不传这个字段，用服务端时间
 		batchInfo.setOrgId(input.getOrgID10());
-		batchInfo.setSourceIp(input.getSourceIP14());
 		batchInfo.setSysId(input.getBusiSysId11());
 		batchInfo.setOperation(input.getOperation8());
 		batchInfo.setVersion(String.valueOf(input.getVersion2()));
 		batchInfo.setPassword(input.getPassword16());
+		batchInfo.setTransModel(input.getTransModel());
 		List<MsgFileInfo> mFileInfos = input.getFileInfos9List();
 		if (mFileInfos != null) {
 			for (MsgFileInfo mInfo : mFileInfos) {
@@ -237,6 +205,7 @@ public class BatchInfo implements Serializable {
 		mBuilder.setBusiSysId11(this.getSysId());
 		mBuilder.setVersion2(Integer.valueOf(this.getVersion()));
 		mBuilder.setOperation8(EOperType.eFROM_SERVER_NOTCHANGE);
+		mBuilder.setTransModel(this.getTransModel());
 		// mBuilder.setOperation(this.getOperation());
 		List<FileInfo> fileInfos = this.getFileInfos();
 		if (fileInfos != null) {

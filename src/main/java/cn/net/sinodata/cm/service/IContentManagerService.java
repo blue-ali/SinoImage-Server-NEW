@@ -9,11 +9,18 @@ import cn.net.sinodata.cm.hibernate.po.InvoiceInfo;
 public interface IContentManagerService {
 
 	/**
-	 * 添加批次
+	 * 提交批次信息，包含文件内容
 	 * @param batchInfo
 	 * @throws Exception
 	 */
-	public void addBatch(BatchInfo batchInfo) throws Exception;
+	public void submitBatchContent(BatchInfo batchInfo) throws Exception;
+	
+	/**
+	 * 提交批次
+	 * @param batchInfo
+	 * @throws Exception
+	 */
+	public List<FileInfo> submitBatch(BatchInfo batchInfo) throws Exception;
 	
 	/**
 	 * 只添加批次信息，不处理文件

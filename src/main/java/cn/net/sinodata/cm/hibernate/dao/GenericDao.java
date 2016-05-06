@@ -102,5 +102,9 @@ public abstract class GenericDao<T> implements IGenericDao<T> {
 			query.setParameter(i, params[i]);
 		}
 	}
+	
+	public void evict(Object obj){
+		sessionFactory.getCurrentSession().evict(obj);
+	}
 
 }

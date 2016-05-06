@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.net.sinodata.cm.common.EnumBatchState;
 import cn.net.sinodata.cm.common.GlobalVars;
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
 import cn.net.sinodata.cm.hibernate.po.FileInfo;
@@ -109,10 +109,14 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 		// TODO 删除批次
 	}
 
+	/**
+	 * 提交批次信息和文件内容
+	 */
 	@Override
-	public void addBatch(BatchInfo batchInfo) throws Exception {
+	public void submitBatchContent(BatchInfo batchInfo) throws Exception {
 		List<FileInfo> fileInfos = batchInfo.getFileInfos();
 
+		//筛选出要删除的文件
 		List<FileInfo> delFiles = new ArrayList<FileInfo>();
 		for (FileInfo fileInfo : fileInfos) {
 			if (fileInfo.getOperation() == EOperType.eDEL) {
@@ -121,7 +125,7 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 		}
 		fileInfos.removeAll(delFiles);
 
-		batchDao.save(batchInfo);
+		batchDao.save(batchInfo);	//TODO 不要更新createTime creator等初信息始字段
 		fileDao.save(fileInfos);
 		fileDao.delete(delFiles);
 		contentService.updContent(batchInfo, fileInfos);
@@ -129,14 +133,8 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	}
 	
 	
-	@Override
-	public void addBatchWithoutData(BatchInfo batchInfo) throws Exception {
-		//check invoice
-		
-		//persist
-		List<InvoiceInfo> invoiceInfos = batchInfo.getInvoiceInfos();
+	public void addBatchInfo(BatchInfo batchInfo) throws Exception {
 		batchDao.save(batchInfo);
-		invoiceDao.save(invoiceInfos);
 		contentService.saveContent(batchInfo);
 		
 		//TODO save invoice and notify
@@ -232,6 +230,32 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 			return null;
 		}
 		return invoiceDao.queryListByIds(invoiceIds);
+	}
+
+	/**
+	 * 提交批次信息
+	 */
+	@Override
+	public List<FileInfo> submitBatch(BatchInfo batchInfo) throws Exception {
+		List<FileInfo> uploadedfiles = null;
+		String batchId = batchInfo.getBatchId();
+		//查询已有批次信息
+		BatchInfo orgiBatchInfo = batchDao.queryById(batchId);
+		if(orgiBatchInfo == null){	//批次不存在，为新上传批次
+			batchDao.save(batchInfo);
+		}else if(orgiBatchInfo.getState() == EnumBatchState.SUSPEND.ordinal()){	//批次已存在, 上传中断状态，需要续传
+			uploadedfiles = fileDao.queryListByBatchId(batchId);
+		}else{	//批次已存在，需要更新批次信息
+			batchDao.evict(orgiBatchInfo);	//断开原对象连接，保存新对象
+			batchDao.save(batchInfo);
+		}
+		return uploadedfiles;
+	}
+
+	@Override
+	public void addBatchWithoutData(BatchInfo batchInfo) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
