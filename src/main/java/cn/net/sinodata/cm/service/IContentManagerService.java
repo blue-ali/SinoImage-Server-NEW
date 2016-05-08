@@ -20,7 +20,21 @@ public interface IContentManagerService {
 	 * @param batchInfo
 	 * @throws Exception
 	 */
-	public List<FileInfo> submitBatch(BatchInfo batchInfo) throws Exception;
+	public List<String> submitBatch(BatchInfo batchInfo) throws Exception;
+	
+	/**
+	 * 完成批次，批次所有文件都处理完后，接收完成批次请求，更新批次状态
+	 * @param batchInfo
+	 * @throws Exception
+	 */
+	public void finishBatch(String batchId) throws Exception;
+	
+	/**
+	 * 提交文件
+	 * @param batchInfo
+	 * @throws Exception
+	 */
+	public void submitFile(FileInfo fileInfo) throws Exception;
 	
 	/**
 	 * 只添加批次信息，不处理文件

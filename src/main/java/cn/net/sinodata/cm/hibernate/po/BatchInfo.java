@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
-import cn.net.sinodata.cm.pb.ProtoBufInfo.ETransModel;
+import cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgBatchInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgFileInfo;
 import cn.net.sinodata.cm.util.DateFormatUtil;
@@ -52,7 +52,7 @@ public class BatchInfo implements Serializable {
 	private int state;
 	/** 传输模式 */
 	@Transient
-	private ETransModel transModel;
+	private ETransMode transMode;
 	/** 密码 */
 	@Transient
 	private String password;
@@ -61,6 +61,10 @@ public class BatchInfo implements Serializable {
 	private List<FileInfo> fileInfos = new ArrayList<FileInfo>();
 	@Transient
 	private EOperType operation = EOperType.eFROM_SERVER_NOTCHANGE;
+	
+	/** 上一次操作 */
+	@Column(name = "last_operation")
+	private String lastOperation;
 
 	public String getBatchId() {
 		return batchId;
@@ -150,12 +154,20 @@ public class BatchInfo implements Serializable {
 		this.password = password;
 	}
 
-	public ETransModel getTransModel() {
-		return transModel;
+	public ETransMode getTransMode() {
+		return transMode;
 	}
 
-	public void setTransModel(ETransModel transModel) {
-		this.transModel = transModel;
+	public void setTransMode(ETransMode transMode) {
+		this.transMode = transMode;
+	}
+	
+	public String getLastOperation() {
+		return lastOperation;
+	}
+
+	public void setLastOperation(String lastOperation) {
+		this.lastOperation = lastOperation;
 	}
 
 	public static BatchInfo fromNetMsg(MsgBatchInfo input) throws ParseException {
@@ -173,7 +185,8 @@ public class BatchInfo implements Serializable {
 		batchInfo.setOperation(input.getOperation8());
 		batchInfo.setVersion(String.valueOf(input.getVersion2()));
 		batchInfo.setPassword(input.getPassword16());
-		batchInfo.setTransModel(input.getTransModel());
+		batchInfo.setTransMode(input.getTransMode());
+		batchInfo.setLastOperation(input.getOperation8().toString());
 		List<MsgFileInfo> mFileInfos = input.getFileInfos9List();
 		if (mFileInfos != null) {
 			for (MsgFileInfo mInfo : mFileInfos) {
@@ -205,7 +218,7 @@ public class BatchInfo implements Serializable {
 		mBuilder.setBusiSysId11(this.getSysId());
 		mBuilder.setVersion2(Integer.valueOf(this.getVersion()));
 		mBuilder.setOperation8(EOperType.eFROM_SERVER_NOTCHANGE);
-		mBuilder.setTransModel(this.getTransModel());
+		mBuilder.setTransMode(this.getTransMode());
 		// mBuilder.setOperation(this.getOperation());
 		List<FileInfo> fileInfos = this.getFileInfos();
 		if (fileInfos != null) {

@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.net.sinodata.cm.common.EnumBatchState;
+import cn.net.sinodata.cm.common.EnumState;
 import cn.net.sinodata.cm.common.GlobalVars;
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
 import cn.net.sinodata.cm.hibernate.po.FileInfo;
@@ -35,47 +36,6 @@ import cn.net.sinodata.framework.exception.SinoException;
 public class ContentManageServiceImpl extends BaseService implements IContentManagerService {
 	protected final String SEPARATOR = File.separator;
 
-	// @Override
-	public BatchInfo _getBatch(BatchInfo batchInfo) throws Exception {
-		String batchId = batchInfo.getBatchId();
-		batchInfo = batchDao.queryById(batchId);
-		if (batchInfo == null) {
-			throw new SinoException("待获取批次" + batchId + "不存在！");
-		}
-		List<FileInfo> fileInfos = fileDao.queryListByBatchId(batchId);
-		batchInfo.setFileInfos(fileInfos);
-		return batchInfo;
-	}
-
-	/*@Override
-	public BatchInfo getBatch(String batchId) throws Exception {
-		// String batchId = batchInfo.getBatchId();
-		BatchInfo batchInfo = batchDao.queryById(batchId);
-		if (batchInfo == null) {
-			throw new SinoException("待获取批次" + batchId + "不存在！");
-		}
-		List<FileInfo> fileInfos = fileDao.queryListByBatchId(batchId);
-		batchInfo.setFileInfos(fileInfos);
-		HBaseDao hbaseDao = new HBaseDao();
-		// String path = buildPath(batchInfo);
-		for (FileInfo fileInfo : fileInfos) {
-			// Hbase处理，把二进制数据放到fileInfo中 返回到控件
-			HQuery hquery = new HQuery();
-			hquery.setColumFamily("F");
-			hquery.setColumnName("content");
-			hquery.setRowkey(fileInfo.getFileMd5());
-			hquery.setTableName("tb_image1");
-			HResult result = hbaseDao.queryByRowkey(hquery);
-			// String fileId = fileInfo.getFileId();
-			// FileUtil.byte2file(result.getValue(),path , fileId);
-			fileInfo.setData(result.getValue());
-
-		}
-
-		// contentService.getContent(batchInfo);
-		return batchInfo;
-	}*/
-	
 	@Override
 	public BatchInfo getBatch(String batchId) throws Exception {
 		BatchInfo batchInfo = batchDao.queryById(batchId);
@@ -236,26 +196,59 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	 * 提交批次信息
 	 */
 	@Override
-	public List<FileInfo> submitBatch(BatchInfo batchInfo) throws Exception {
-		List<FileInfo> uploadedfiles = null;
+	public List<String> submitBatch(BatchInfo batchInfo) throws Exception {
+		List<String> processingFileIds = null;
 		String batchId = batchInfo.getBatchId();
 		//查询已有批次信息
 		BatchInfo orgiBatchInfo = batchDao.queryById(batchId);
 		if(orgiBatchInfo == null){	//批次不存在，为新上传批次
+			batchInfo.setState(EnumState.PROCESSING.ordinal());	//修改批次状态为处理中
 			batchDao.save(batchInfo);
-		}else if(orgiBatchInfo.getState() == EnumBatchState.SUSPEND.ordinal()){	//批次已存在, 上传中断状态，需要续传
-			uploadedfiles = fileDao.queryListByBatchId(batchId);
-		}else{	//批次已存在，需要更新批次信息
+			
+			List<FileInfo> fileInfos = batchInfo.getFileInfos();
+			fileInfos.stream().forEach(fileInfo -> fileInfo.setState(EnumState.PROCESSING.ordinal()));	//修改文件状态为处理中
+			fileDao.save(fileInfos);
+			
+			processingFileIds = fileInfos.stream().map(fileInfo -> fileInfo.getFileId()).collect(Collectors.toList());
+		}else if(orgiBatchInfo.getState() == EnumState.PROCESSING.ordinal()){	//批次已存在, 上次提交未成功，需要继续处理剩余文件
+			processingFileIds = fileDao.queryProcessingFileIds(batchId);	//查询未处理文件并返回客户端
+		}else{	//批次已存在且上次提交成功，更新批次信息
 			batchDao.evict(orgiBatchInfo);	//断开原对象连接，保存新对象
+			
+			batchInfo.setState(EnumState.PROCESSING.ordinal());	//修改批次状态为处理中
 			batchDao.save(batchInfo);
+			List<FileInfo> fileInfos = batchInfo.getFileInfos();
+			fileInfos.stream().forEach(fileInfo -> fileInfo.setState(EnumState.PROCESSING.ordinal()));	//修改文件状态为处理中
+			fileDao.save(fileInfos);
+			
+			processingFileIds = fileInfos.stream().map(fileInfo -> fileInfo.getFileId()).collect(Collectors.toList());
 		}
-		return uploadedfiles;
+		return processingFileIds;
 	}
 
 	@Override
 	public void addBatchWithoutData(BatchInfo batchInfo) throws Exception {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/**
+	 * 提交文件
+	 */
+	@Override
+	public void submitFile(FileInfo fileInfo) throws Exception {
+		fileInfo.setState(EnumState.FINISH.ordinal());
+		fileDao.save(fileInfo);
+	}
+
+	/**
+	 * 完成批次
+	 */
+	@Override
+	public void finishBatch(String batchId) throws Exception {
+		BatchInfo batchInfo = batchDao.queryById(batchId);
+		batchInfo.setState(EnumState.FINISH.ordinal());
+		batchDao.save(batchInfo);
 	}
 
 }

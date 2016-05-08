@@ -14,7 +14,7 @@ public class ResultInfo {
 	
 	private String msg = "";
 	private EResultStatus status = EResultStatus.eSuccess;
-	private List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+	private List<String> processingFileIds = new ArrayList<String>();
 
 	public String getMsg() {
 		return msg;
@@ -31,13 +31,13 @@ public class ResultInfo {
 	public void setStatus(EResultStatus status) {
 		this.status = status;
 	}
-	
-	public List<FileInfo> getFileInfos() {
-		return fileInfos;
+
+	public List<String> getProcessingFileIds() {
+		return processingFileIds;
 	}
 
-	public void setFileInfos(List<FileInfo> fileInfos) {
-		this.fileInfos = fileInfos;
+	public void setProcessingFileIds(List<String> processingFileIds) {
+		this.processingFileIds = processingFileIds;
 	}
 
 	public static ResultInfo fromPBBytes(byte[] bytes) throws Exception {
@@ -50,27 +50,15 @@ public class ResultInfo {
 		ResultInfo resultInfo = new ResultInfo();
 		resultInfo.setMsg(input.getMsg());
 		resultInfo.setStatus(input.getStatus());
-		List<MsgFileInfo> msgFileInfos = input.getFileInfosList();
-		for (MsgFileInfo msgFileInfo : msgFileInfos) {
-			resultInfo.fileInfos.add(FileInfo.FromPBMsg(msgFileInfo));
-		}
+		resultInfo.setProcessingFileIds(input.getProcessingFileIdsList());
 		return resultInfo;
 	}
-	//////////////////////////////////////////////////
+
 	public MsgResultInfo toNetMsg() {
 		MsgResultInfo.Builder builder = MsgResultInfo.newBuilder();
 		builder.setMsg(this.getMsg());
 		builder.setStatus(this.getStatus());
-		List<FileInfo> fileInfos = this.getFileInfos();
-		for (FileInfo fileInfo : fileInfos) {
-			try {
-				builder.addFileInfos(fileInfo.ToPBMsg());
-			} catch (ParseException e) {
-				builder.setStatus(EResultStatus.eFailed);
-				builder.setMsg(e.getMessage());
-				e.printStackTrace();
-			}
-		}
+		builder.addAllProcessingFileIds(this.processingFileIds);
 		return builder.build();
 	}
 

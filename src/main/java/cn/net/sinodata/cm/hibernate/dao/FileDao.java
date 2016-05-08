@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
+import cn.net.sinodata.cm.common.EnumState;
 import cn.net.sinodata.cm.hibernate.po.FileInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
 
@@ -41,6 +42,14 @@ public class FileDao extends GenericDao<FileInfo>{
 		String hql = "from FileInfo where batchId=?";
 		Query query = sessionFactory.openSession().createQuery(hql);
 		setQueryParams(query, new String[]{batchId});
+		return query.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> queryProcessingFileIds(String batchId){
+		String hql = "select fileId from FileInfo where batchId=? and state=?";
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		setQueryParams(query, new Object[]{batchId, EnumState.PROCESSING.ordinal()});
 		return query.list();
 	}
 }

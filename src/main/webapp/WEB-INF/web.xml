@@ -17,39 +17,50 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+ 
+ <!-- 断点提交批次信息 -->
   <servlet>
-    <servlet-name>FileLength</servlet-name>
-    <servlet-class>cn.net.sinodata.cm.controller.FileGetTransferedLength</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>FileLength</servlet-name>
-    <url-pattern>/FileLength</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>serverGetServerInfo</servlet-name>
-    <servlet-class>com.tigera.document.net.ServerGetServerInfo</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>serverGetServerInfo</servlet-name>
-    <url-pattern>/ServerGetServerInfo</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>serverGetServerList</servlet-name>
+    <display-name>SubmitBrokeBatchService</display-name>
+    <servlet-name>submitBrokeBatchService</servlet-name>
     <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>serverGetServerList</servlet-name>
-    <url-pattern>/ServerGetServerList</url-pattern>
+    <servlet-name>submitBrokeBatchService</servlet-name>
+    <url-pattern>/SubmitBrokeBatch</url-pattern>
   </servlet-mapping>
+  
+  <!-- 断点提交批次文件 -->
   <servlet>
-    <display-name>AddBatchService</display-name>
-    <servlet-name>addBatchService</servlet-name>
+    <display-name>SubmitBrokeFileService</display-name>
+    <servlet-name>submitBrokeFileService</servlet-name>
     <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>addBatchService</servlet-name>
-    <url-pattern>/FileUpload</url-pattern>
+    <servlet-name>submitBrokeFileService</servlet-name>
+    <url-pattern>/SubmitBrokeFile</url-pattern>
   </servlet-mapping>
+  
+  <!-- 断点提交批次完成信息 -->
+  <servlet>
+    <display-name>FinishBrokeBatchService</display-name>
+    <servlet-name>finishBrokeBatchService</servlet-name>
+    <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>finishBrokeBatchService</servlet-name>
+    <url-pattern>/FinishBrokeBatch</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <display-name>SubmitFullBatchService</display-name>
+    <servlet-name>submitFullBatchService</servlet-name>
+    <servlet-class>cn.net.sinodata.framework.servlet.SpringServletProxy</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>submitFullBatchService</servlet-name>
+    <url-pattern>/SubmitFullBatch</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <display-name>getBatch</display-name>
     <servlet-name>getBatchService</servlet-name>
@@ -57,8 +68,9 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>getBatchService</servlet-name>
-    <url-pattern>/FileDownload</url-pattern>
+    <url-pattern>/GetBatch</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <display-name>downloadFile</display-name>
     <servlet-name>downloadFileService</servlet-name>
@@ -68,6 +80,7 @@
     <servlet-name>downloadFileService</servlet-name>
     <url-pattern>/DownloadFile</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>InitServerContext</servlet-name>
     <servlet-class>cn.net.sinodata.framework.servlet.ServerInitServlet</servlet-class>

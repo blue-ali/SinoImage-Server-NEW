@@ -33,28 +33,6 @@ public class GetBatchService extends HttpServlet {
 	@Resource
 	private IContentManagerService manageService;
 
-	/*
-	 * public void doPost(HttpServletRequest request, HttpServletResponse
-	 * response) throws ServletException, IOException {
-	 * 
-	 * String result = ""; try { BufferedReader br = new BufferedReader(new
-	 * InputStreamReader( request.getInputStream())); String line = null;
-	 * StringBuilder sb = new StringBuilder(); while ((line = br.readLine()) !=
-	 * null) { sb.append(line); } String json = sb.toString(); json =
-	 * URLDecoder.decode(json, "utf8"); logger.debug("request json: " + json);
-	 * // BatchInfo batchInfo = JsonUtil.jsonStr2BatchInfo(json); // batchInfo =
-	 * manageService.getBatch(batchInfo); BatchInfo batchInfo =
-	 * JsonUtil.jsonStr2BatchInfo(json); batchInfo =
-	 * manageService.getBatch(batchInfo); result =
-	 * JSONObject.fromObject(batchInfo).toString(); } catch (Exception e) {
-	 * logger.error("获取批次信息失败, " + e); result = "{'result': '0', 'errMsg': " +
-	 * "'获取批次信息失败,ERR: " + e.getMessage() + "'}"; } finally {
-	 * response.getWriter().write(result); } // InputStream is = new
-	 * BufferedInputStream(new FileInputStream(file)); // is.read(buffer); //
-	 * is.close(); // // OutputStream os = new
-	 * BufferedOutputStream(response.getOutputStream()); // os.write(buffer); //
-	 * os.flush(); // os.close(); }
-	 */
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
@@ -63,7 +41,7 @@ public class GetBatchService extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String batchId = request.getParameter("batchno");
+		String batchId = request.getParameter("batchNo");
 		// MsgBatchInfo mBatchInfo =
 		// MsgBatchInfo.parseFrom(request.getInputStream());
 		// BatchInfo querybatchinfo = BatchInfo.FromNetMsg(mBatchInfo);

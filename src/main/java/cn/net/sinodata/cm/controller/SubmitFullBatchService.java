@@ -10,9 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,17 +21,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
-import cn.net.sinodata.cm.hibernate.po.FileInfo;
-import cn.net.sinodata.cm.hibernate.po.InvoiceInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EResultStatus;
-import cn.net.sinodata.cm.pb.ProtoBufInfo.ETransModel;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgBatchInfo;
-import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgFileInfo;
-import cn.net.sinodata.cm.pb.bean.ResultInfo;
-import cn.net.sinodata.cm.service.IContentManagerService;
 import cn.net.sinodata.cm.util.OpeMetaFileUtils;
-import cn.net.sinodata.cm.util.Util;
-import cn.net.sinodata.framework.log.SinoLogger;
 
 /**
  * @author manan
@@ -81,18 +71,18 @@ public class SubmitFullBatchService extends BaseServletService {
 						processFromUpload(item, response);
 					}
 				} else {
-					result.get().setStatus(EResultStatus.eFailed);
-					result.get().setMsg("解析请求失败，请求中不包含任何对象");
+					getResult().setStatus(EResultStatus.eFailed);
+					getResult().setMsg("解析请求失败，请求中不包含任何对象");
 				}
 
 			}
 		} catch (Exception e) {
-			result.get().setStatus(EResultStatus.eFailed);
-			result.get().setMsg("提交批次失败: " + e.getMessage());
 			logger.error(e);
+			getResult().setStatus(EResultStatus.eFailed);
+			getResult().setMsg("提交批次失败: " + e.getMessage());
 		} finally {
 			response.setCharacterEncoding("UTF-8");
-			result.get().toNetMsg().writeTo(response.getOutputStream());
+			getResult().toNetMsg().writeTo(response.getOutputStream());
 		}
 	}
 
@@ -101,7 +91,7 @@ public class SubmitFullBatchService extends BaseServletService {
 
 		// fname = fname.substring(fname.lastIndexOf("\\") + 1, fname.length());
 
-		if (fname.endsWith(OpeMetaFileUtils.PBOPEEXT)) { // 处理批次信息
+		if (fname.endsWith(".pb")) { // 处理批次信息
 			// pb对象转换为po对象
 			MsgBatchInfo mbatch = MsgBatchInfo.parseFrom(item.getInputStream());
 			BatchInfo batchInfo = BatchInfo.fromNetMsg(mbatch);
@@ -116,14 +106,14 @@ public class SubmitFullBatchService extends BaseServletService {
 					sb.append(String.format("发票号码%s，曾在%s,在批次%s由%s已经提交过\r\n", invoiceInfo.getInvoiceNo(),
 							invoiceInfo.getCreatetime(), invoiceInfo.getBatchId(), invoiceInfo.getAuthor()));
 				}
-				result.get().setStatus(EResultStatus.eFailed);
-				result.get().setMsg(sb.toString());
+				getResult().setStatus(EResultStatus.eFailed);
+				getResult().setMsg(sb.toString());
 			} else {
 				manageService.submitBatchContent(batchInfo);	//提交批次信息和内容
-				result.get().setStatus(EResultStatus.eSuccess);
+				getResult().setStatus(EResultStatus.eSuccess);
 			}*/
 			manageService.submitBatchContent(batchInfo);	//提交批次信息和内容
-			result.get().setStatus(EResultStatus.eSuccess);
+			getResult().setStatus(EResultStatus.eSuccess);
 		} else {
 			// 上传数据内容不对
 			throw new Exception("上传数据内容的扩展名非" + OpeMetaFileUtils.PBDataExt + "或者" + OpeMetaFileUtils.PBOPEEXT + "服务拒绝");
@@ -170,8 +160,8 @@ public class SubmitFullBatchService extends BaseServletService {
 	 * _batchinfocache.remove(nbatch.getBatchNO());; }
 	 * 
 	 * } else { nresult = new NResultInfo();
-	 * nresult.get().setStatus(EResultStatus.eFailed);
-	 * nresult.get().setMsg("上传未知批次的内容，请重新上传整个批次"); } return nresult; }
+	 * ngetResult().setStatus(EResultStatus.eFailed);
+	 * ngetResult().setMsg("上传未知批次的内容，请重新上传整个批次"); } return nresult; }
 	 */
 
 	public static void main(String[] args) {

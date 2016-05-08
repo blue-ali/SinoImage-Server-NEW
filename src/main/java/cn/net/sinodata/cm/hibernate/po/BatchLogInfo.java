@@ -1,24 +1,13 @@
 package cn.net.sinodata.cm.hibernate.po;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.jdbc.BatchingBatcher;
-
-import com.google.protobuf.ByteString;
-
-import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
-import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgFileInfo;
-import cn.net.sinodata.cm.util.DateFormatUtil;
 
 
 @Entity

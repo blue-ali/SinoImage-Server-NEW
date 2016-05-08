@@ -47,6 +47,15 @@ public class FileInfo implements Serializable{
 	/** 分类 */
 	@Column(name="category")
 	private String Category;
+	
+	/** 文件状态 */
+	@Column(name="state")
+	private int state;
+	
+	/** 上一次操作 */
+	@Column(name = "last_operation")
+	private String lastOperation;
+	
 	@Transient
     /** 最后修改时间*/
     private String lastModTime;
@@ -203,6 +212,22 @@ public class FileInfo implements Serializable{
 	public void setInvoiceNo(String invoiceNo) {
 		this.invoiceNo = invoiceNo;
 	}
+	
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public String getLastOperation() {
+		return lastOperation;
+	}
+
+	public void setLastOperation(String lastOperation) {
+		this.lastOperation = lastOperation;
+	}
 
 	public MsgFileInfo ToPBMsg() throws ParseException
 	{
@@ -252,6 +277,7 @@ public class FileInfo implements Serializable{
 		fileInfo.setVersion(input.getVersion2());
 		fileInfo.setCategory(input.getCategory14());
 		fileInfo.setFileUrl(input.getFileURL7());
+		fileInfo.setLastOperation(input.getOperation12().toString());
 		if (input.getData11() != null)
 		{
 			fileInfo.setData(input.getData11().toByteArray());

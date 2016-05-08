@@ -75,13 +75,13 @@
 <!-- 		<property name="packagesToScan" value="cn.net.sinodata.cm.hibernate.po"></property> -->
 <!-- 	</bean> -->
 	<bean id="txManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<tx:annotation-driven transaction-manager="txManager" />  
 
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" >
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" >
 
 		<property name="dataSource" ref="dataSource" />
 
@@ -99,8 +99,7 @@
 				<prop key="hibernate.jdbc.batch_size">5</prop>
 				<prop key="hibernate.use_sql_comments">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
-				<prop key="hibernate.transaction.factory_class">org.springframework.orm.hibernate3.SpringTransactionFactory
-				</prop>
+<!-- 				<prop key="hibernate.transaction.factory_class">org.springframework.orm.hibernate4.SpringTransactionFactory</prop> -->
 			<!-- 	<prop key="hibernate.transaction.manager_lookup_class">org.springframework.orm.hibernate3.LocalTransactionManagerLookup
 				</prop> -->
 			</props>
@@ -108,7 +107,7 @@
 	</bean>
 	<!--事务管理器-->
 	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>

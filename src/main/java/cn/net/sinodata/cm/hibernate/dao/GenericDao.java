@@ -3,6 +3,7 @@ package cn.net.sinodata.cm.hibernate.dao;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -15,7 +16,7 @@ public abstract class GenericDao<T> implements IGenericDao<T> {
 		this.entityClass = clazz;
 	}
 
-	@Resource
+	@Inject
 	protected SessionFactory sessionFactory;
 
 	@Override

@@ -4,6 +4,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <property name="java-output-path" value="/SinoCM/target/classes"/>
-        <property name="context-root" value="TigEra.Document.Server"/>
+        <property name="context-root" value="SinoCM"/>
     </wb-module>
 </project-modules>

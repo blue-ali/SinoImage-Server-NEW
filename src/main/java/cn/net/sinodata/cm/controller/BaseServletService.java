@@ -22,6 +22,7 @@ import cn.net.sinodata.framework.log.SinoLogger;
 
 /**
  * servlet 基类
+ * 
  * @author manan
  *
  */
@@ -33,5 +34,14 @@ public class BaseServletService extends HttpServlet {
 	@Resource
 	protected IContentManagerService manageService;
 
-	protected ThreadLocal<ResultInfo> result = new ThreadLocal<ResultInfo>();
+	private ThreadLocal<ResultInfo> result = new ThreadLocal<ResultInfo>();
+
+	protected ResultInfo getResult() {
+		ResultInfo rs = result.get();
+		if (rs == null) {
+			rs = new ResultInfo();
+			result.set(rs);
+		}
+		return rs;
+	}
 }
