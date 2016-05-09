@@ -1,7 +1,6 @@
 package cn.net.sinodata.cm.content.fs;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,12 +9,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import cn.net.sinodata.cm.common.Constants;
 import cn.net.sinodata.cm.content.BaseContent;
 import cn.net.sinodata.cm.content.BaseContentService;
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
 import cn.net.sinodata.cm.hibernate.po.FileInfo;
-import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
 import cn.net.sinodata.framework.util.FileUtil;
 
 @Service("fsService")
@@ -55,7 +52,6 @@ public class FileSystemServiceImpl extends BaseContentService{
 		if(!dir.exists()){
 			throw new Exception("路径不存在：" + path);
 		}else{
-			
 			List<File> files = Arrays.asList(dir.listFiles());
 			List<FileInfo> fileInfos = batchInfo.getFileInfos();
 			file2FileInfo(fileInfos, files);
@@ -110,22 +106,6 @@ public class FileSystemServiceImpl extends BaseContentService{
 		batchInfo.addFileInfo(fileInfo1);
 		
 		new FileSystemServiceImpl().getContent(batchInfo);
-	}
-
-	@Override
-	public void modifyContentFile(final BatchInfo batchInfo,
-			final FileInfo fileInfo) throws Exception {
-		String path = buildPath(batchInfo);
-		EOperType fileOper = fileInfo.getOperation();
-		String fileName = fileInfo.getFileId();
-		byte[] fileData = fileInfo.getData();
-		if (EOperType.eUPD.equals(fileOper) || EOperType.eADD.equals(fileOper)) {
-			FileUtil.byte2file(fileData, path, fileName);
-		} else if (EOperType.eDEL.equals(fileOper)) {
-			FileUtil.deleteFile(path + SEPARATOR + fileName);
-		} else {
-			throw new Exception("Unsupported file operation [" + fileOper + "]");
-		}
 	}
 
 	@Override

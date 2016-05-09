@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import cn.net.sinodata.cm.pb.ProtoBufInfo.EBatchStatus;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgBatchInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgFileInfo;
@@ -47,17 +48,21 @@ public class BatchInfo implements Serializable {
 	/** 创建人 */
 	@Column(name = "creator")
 	private String creator;
-	/** 批次状态 */
+	/** 批次处理状态，用于断点续传，未完成提交0， 完成提交1 */
 	@Column(name = "state")
 	private int state;
 	/** 密码 */
 	@Transient
 	private String password;
-	/** 包含的文件，用于JCR持久化 */
+	/** 包含的文件 */
 	@Transient
 	private List<FileInfo> fileInfos = new ArrayList<FileInfo>();
 	@Transient
 	private EOperType operation = EOperType.eFROM_SERVER_NOTCHANGE;
+	
+	/** 批次状态 ，断点续传模式下，第一提交批次信息时为NEW，第二次提交批次数据时为PROCESSING*/
+	@Transient
+	private EBatchStatus status;
 	
 	/** 返回结果，用于获取批次等操作 */
 	@Transient
@@ -163,6 +168,14 @@ public class BatchInfo implements Serializable {
 		this.lastOperation = lastOperation;
 	}
 
+	public EBatchStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(EBatchStatus status) {
+		this.status = status;
+	}
+
 	public ResultInfo getResultInfo() {
 		if(resultInfo == null)
 			resultInfo = new ResultInfo();
@@ -175,13 +188,9 @@ public class BatchInfo implements Serializable {
 
 	public static BatchInfo fromNetMsg(MsgBatchInfo input) throws ParseException {
 		BatchInfo batchInfo = new BatchInfo();
-		// ret.setAuthor(input.getAuthor());
 		batchInfo.setBatchId(input.getBatchNO6());
 		batchInfo.setCreateTime(DateFormatUtil.parseStringDate(input.getCreateTime4()));
 		batchInfo.setCreator(input.getAuthor1());
-		// batchInfo.setFileIds(input.getfileid);
-		// batchInfo.setLastModified(DateUtil.parse(input.get,
-		// GlobalVars.client_date_format));
 		batchInfo.setLastModified(new Date()); // TODO 控件现在不传这个字段，用服务端时间
 		batchInfo.setOrgId(input.getOrgID10());
 		batchInfo.setSysId(input.getBusiSysId11());
@@ -196,6 +205,7 @@ public class BatchInfo implements Serializable {
 				batchInfo.getFileInfos().add(fileInfo);
 			}
 		}
+		batchInfo.setStatus(input.getStatus());
 		return batchInfo;
 	}
 
@@ -231,7 +241,6 @@ public class BatchInfo implements Serializable {
 		} else {
 			// ret.setFileCount(0); // 注：这个字段，或者应该清除，或者应该保留，保留的话的作用是作为校验作用
 		}
-		mBuilder.setResultInfo17(this.getResultInfo().toNetMsg());
 		return mBuilder.build();
 	}
 

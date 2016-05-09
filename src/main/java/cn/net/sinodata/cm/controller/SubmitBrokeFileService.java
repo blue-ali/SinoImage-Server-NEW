@@ -88,7 +88,7 @@ public class SubmitBrokeFileService extends BaseServletService {
 			FileInfo fileInfo = FileInfo.FromPBMsg(mFileInfo);
 			logger.info("获得批次元数据信息, BatchId:[" + fileInfo.getBatchId() + "], FileId:[" + fileInfo.getFileId() + "]");
 
-			manageService.submitFile(fileInfo); // 提交批次信息和内容
+//			manageService.submitFile(fileInfo); // 提交批次信息和内容
 			getResult().setStatus(EResultStatus.eSuccess);
 		} else {
 			// 上传数据内容不对

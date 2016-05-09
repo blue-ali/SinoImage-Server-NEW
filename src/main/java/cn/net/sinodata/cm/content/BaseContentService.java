@@ -7,13 +7,12 @@ import cn.net.sinodata.cm.common.Constants;
 import cn.net.sinodata.cm.common.GlobalVars;
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
 import cn.net.sinodata.cm.util.DateUtil;
+import cn.net.sinodata.cm.util.Util;
 import cn.net.sinodata.framework.util.FileUtil;
 
 
 public abstract class BaseContentService implements IContentService {
 
-	protected final String SEPARATOR = File.separator;
-	
 	protected abstract List<? extends BaseContent> batchInfo2Content(BatchInfo batchInfo);
 	
 	/**
@@ -23,17 +22,18 @@ public abstract class BaseContentService implements IContentService {
 	 */
 	protected String buildPath(BatchInfo batchInfo){
 		
-		StringBuffer sb = new StringBuffer(GlobalVars.local_root_path);
-		sb.append(SEPARATOR);
-		sb.append(batchInfo.getSysId());
-		sb.append(SEPARATOR);
-		sb.append(DateUtil.format(batchInfo.getCreateTime(), GlobalVars.fs_date_format));
-		sb.append(SEPARATOR);
-		sb.append(batchInfo.getOrgId());
-		sb.append(SEPARATOR);
-		sb.append(batchInfo.getBatchId());
-		sb.append(SEPARATOR);
+		StringBuffer sb = new StringBuffer();
+		appendPath(sb, GlobalVars.local_root_path);
+		appendPath(sb, batchInfo.getSysId());
+		appendPath(sb, DateUtil.format(batchInfo.getCreateTime(), GlobalVars.fs_date_format));
+		appendPath(sb, batchInfo.getOrgId());
+		appendPath(sb, batchInfo.getBatchId());
 		return sb.toString();
+	}
+	
+	private void appendPath(StringBuffer sb, String path){
+		if(!Util.isStrEmpty(path))
+			sb.append(path).append(File.separator);
 	}
 	
 	protected int getBatchCurVersion(BatchInfo batchInfo) {

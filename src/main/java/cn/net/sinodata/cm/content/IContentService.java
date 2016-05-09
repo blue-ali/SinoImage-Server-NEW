@@ -19,14 +19,8 @@ public interface IContentService {
 	
 	public void delContent(final BatchInfo batchInfo, final List<FileInfo> delFiles) throws Exception;
 	
-//	public void addContent(final String path, final BaseContent content);
-	
-//	public JcrContent getContent(final String path);
-	
 	public Object getContent(final BatchInfo batchInfo) throws Exception;
 	
-	public void modifyContentFile(final BatchInfo batchInfo, final FileInfo fileInfo) throws Exception;
-//	public boolean isNodeExist(String path);
 	/**
 	 * JCR注册节点用
 	 */

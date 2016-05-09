@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
 import cn.net.sinodata.cm.hibernate.po.FileInfo;
+import cn.net.sinodata.cm.pb.ProtoBufInfo.EBatchStatus;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EResultStatus;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgBatchInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgFileInfo;
@@ -32,7 +33,6 @@ import cn.net.sinodata.cm.util.OpeMetaFileUtils;
 @Controller
 @SuppressWarnings("serial")
 public class SubmitBrokeBatchService extends BaseServletService {
-
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -81,19 +81,25 @@ public class SubmitBrokeBatchService extends BaseServletService {
 	private void processFromUpload(FileItem item, HttpServletResponse hsr) throws Exception {
 		String fname = item.getName();
 
-		// fname = fname.substring(fname.lastIndexOf("\\") + 1, fname.length());
-
 		if (fname.endsWith(".pb")) { // 处理批次信息
 			// pb对象转换为po对象
 			MsgBatchInfo mbatch = MsgBatchInfo.parseFrom(item.getInputStream());
 			BatchInfo batchInfo = BatchInfo.fromNetMsg(mbatch);
-			
-			logger.info("获得批次数据信息, BatchNo:[" + batchInfo.getBatchId() + "]");
-			
-			List<String> processingFileIds = manageService.submitBatch(batchInfo);	//提交批次信息和内容
-			if(processingFileIds != null)
-				getResult().setProcessingFileIds(processingFileIds);
-			getResult().setStatus(EResultStatus.eSuccess);
+			if (batchInfo.getStatus() == EBatchStatus.NEW) {
+				logger.info("获得批次信息, BatchNo:[" + batchInfo.getBatchId() + "]");
+
+				List<String> processingFileIds = manageService.submitBatch(batchInfo); // 提交批次信息和文件信息
+				if (processingFileIds != null)
+					getResult().setProcessingFileIds(processingFileIds);
+				getResult().setStatus(EResultStatus.eSuccess);
+			}else if(batchInfo.getStatus() == EBatchStatus.PROCESSING){
+				logger.info("获得批次元数据, BatchId:[" + batchInfo.getBatchId() + "]");
+				List<FileInfo> fileInfos = batchInfo.getFileInfos();
+				for (FileInfo fileInfo : fileInfos) {
+					manageService.submitFile(batchInfo, fileInfo); // 提交批次信息和内容
+				}
+				getResult().setStatus(EResultStatus.eSuccess);
+			}
 		} else {
 			// 上传数据内容不对
 			throw new Exception("上传数据内容的扩展名非" + OpeMetaFileUtils.PBDataExt + "或者" + OpeMetaFileUtils.PBOPEEXT + "服务拒绝");

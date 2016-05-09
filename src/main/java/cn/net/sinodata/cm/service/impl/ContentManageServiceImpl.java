@@ -36,6 +36,9 @@ import cn.net.sinodata.framework.exception.SinoException;
 public class ContentManageServiceImpl extends BaseService implements IContentManagerService {
 	protected final String SEPARATOR = File.separator;
 
+	/**
+	 * 获取批次信息
+	 */
 	@Override
 	public BatchInfo getBatch(String batchId) throws Exception {
 		BatchInfo batchInfo = batchDao.queryById(batchId);
@@ -92,89 +95,10 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 		contentService.updContent(batchInfo, fileInfos);
 		contentService.delContent(batchInfo, delFiles);
 	}
-	
-	
-	public void addBatchInfo(BatchInfo batchInfo) throws Exception {
-		batchDao.save(batchInfo);
-		contentService.saveContent(batchInfo);
-		
-		//TODO save invoice and notify
-	}
 
-	@Override
-	public void upsertBatch(BatchInfo batchInfo) throws Exception {
-		List<FileInfo> fileInfos = batchInfo.getFileInfos();
-
-		// 将需要更新和删除的文件分开
-		List<FileInfo> delFiles = new ArrayList<FileInfo>();
-		for (FileInfo fileInfo : fileInfos) {
-			if (fileInfo.getOperation() == EOperType.eDEL) {
-				delFiles.add(fileInfo);
-			}
-		}
-		fileInfos.removeAll(delFiles);
-
-		batchDao.save(batchInfo);
-		if (fileInfos.size() > 0) {
-			fileDao.save(fileInfos);
-			contentService.updContent(batchInfo, fileInfos);// Hbase处理，把二进制数据放到Hbase中
-		}
-		if (delFiles.size() > 0) {
-			fileDao.delete(delFiles);
-			contentService.delContent(batchInfo, delFiles);
-		}
-	}
-
-	private String buildPath(BatchInfo batchInfo) {
-
-		StringBuffer sb = new StringBuffer(GlobalVars.local_root_path);
-		sb.append(SEPARATOR);
-		String sid = batchInfo.getSysId();
-		String oid = batchInfo.getOrgId();
-		if (sid == null || "".equals(sid)) {
-			sid = "1212";
-		}
-		if (oid == null || "".equals(oid)) {
-			oid = "test";
-		}
-		sb.append(sid);
-		sb.append(SEPARATOR);
-		sb.append(DateUtil.format(batchInfo.getCreateTime(), GlobalVars.fs_date_format));
-		sb.append(SEPARATOR);
-		sb.append(oid);
-		sb.append(SEPARATOR);
-		sb.append(batchInfo.getBatchId());
-		return sb.toString();
-	}
-	
-	private String buildRelaPath(BatchInfo batchInfo) {
-		StringBuffer sb = new StringBuffer(SEPARATOR);
-		String sid = batchInfo.getSysId();
-		String oid = batchInfo.getOrgId();
-		if (sid == null || "".equals(sid)) {
-			sid = "1212";
-		}
-		if (oid == null || "".equals(oid)) {
-			oid = "test";
-		}
-		sb.append(sid);
-		sb.append(SEPARATOR);
-		sb.append(DateUtil.format(batchInfo.getCreateTime(), GlobalVars.fs_date_format));
-		sb.append(SEPARATOR);
-		sb.append(oid);
-		sb.append(SEPARATOR);
-		sb.append(batchInfo.getBatchId());
-		sb.append(SEPARATOR);
-		return sb.toString();
-	}
-
-	@Override
-	public void addFile(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
-		fileDao.save(fileInfo);
-		contentService.updContent(batchInfo, fileInfo);
-		batchInfo.updateFileState(fileInfo);
-	}
-
+	/**
+	 * 校验发票信息，以后改成单张校验，不在提交时整体校验
+	 */
 	@Override
 	public List<InvoiceInfo> checkInvoice(BatchInfo batchInfo) throws Exception {
 		List<FileInfo> fileInfos = batchInfo.getFileInfos();
@@ -194,7 +118,7 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	}
 
 	/**
-	 * 提交批次信息
+	 * 提交批次信息，用于断点续传。只提交信息，不提交批次文件数据
 	 */
 	@Override
 	public List<String> submitBatch(BatchInfo batchInfo) throws Exception {
@@ -227,21 +151,13 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 		return processingFileIds;
 	}
 
-	@Override
-	public void addBatchWithoutData(BatchInfo batchInfo) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
 	/**
-	 * 提交文件
+	 * 提交文件,用于断点续传
 	 */
 	@Override
-	public void submitFile(FileInfo fileInfo) throws Exception {
+	public void submitFile(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
 		fileInfo.setState(EnumState.FINISH.ordinal());
 		fileDao.save(fileInfo);
-		BatchInfo batchInfo = batchDao.queryById(fileInfo.getBatchId());
-		batchInfo.addFileInfo(fileInfo);
 		contentService.saveContent(batchInfo, fileInfo);
 	}
 

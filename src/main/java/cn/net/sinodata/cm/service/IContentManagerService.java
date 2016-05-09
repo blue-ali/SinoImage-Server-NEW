@@ -34,21 +34,7 @@ public interface IContentManagerService {
 	 * @param batchInfo
 	 * @throws Exception
 	 */
-	public void submitFile(FileInfo fileInfo) throws Exception;
-	
-	/**
-	 * 只添加批次信息，不处理文件
-	 * @param batchInfo
-	 * @throws Exception
-	 */
-	public void addBatchWithoutData(BatchInfo batchInfo) throws Exception;
-	/**
-	 * 添加、更新批次
-	 * @param batchInfo
-	 * @throws Exception
-	 */
-	public void upsertBatch(BatchInfo batchInfo) throws Exception;
-	
+	public void submitFile(BatchInfo batchInfo, FileInfo fileInfo) throws Exception;
 
 	/**
 	 * 删除批次
@@ -63,13 +49,6 @@ public interface IContentManagerService {
 	 * @throws Exception
 	 */
 	public BatchInfo getBatch(String batchId) throws Exception;
-	
-	/**
-	 * 往批次添加文件
-	 * @param batchInfo
-	 * @throws Exception
-	 */
-	public void addFile(BatchInfo batchInfo, FileInfo fileInfo) throws Exception;
 	
 	/**
 	 * 检查发票是否提交过

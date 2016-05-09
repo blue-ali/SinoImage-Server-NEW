@@ -23,6 +23,7 @@ import cn.net.sinodata.cm.service.IContentManagerService;
 import cn.net.sinodata.framework.log.SinoLogger;
 
 /**
+ * 获取批次信息
  * @author manan
  *
  */
@@ -43,25 +44,22 @@ public class GetBatchService extends BaseServletService {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String batchId = request.getParameter("batchNo");
-		// MsgBatchInfo mBatchInfo =
-		// MsgBatchInfo.parseFrom(request.getInputStream());
-		// BatchInfo querybatchinfo = BatchInfo.FromNetMsg(mBatchInfo);
 		BatchInfo batchInfo = null;
 		try {
 			batchInfo = manageService.getBatch(batchId);
 			if (batchInfo != null) {
 				batchInfo.setOperation(EOperType.eFROM_SERVER_NOTCHANGE);
 			}
-			batchInfo.getResultInfo().setStatus(EResultStatus.eSuccess);
-			batchInfo.toNetMsg().writeTo(response.getOutputStream());
+			getResult().setStatus(EResultStatus.eSuccess);
+			getResult().setBatchInfo(batchInfo);
 		} catch (Exception e) {
 			logger.error(e);
 			getResult().setStatus(EResultStatus.eFailed);
 			getResult().setMsg(e.getMessage());
+		} finally {
 			getResult().toNetMsg().writeTo(response.getOutputStream());
-		} 
+		}
 	}
 
 }
