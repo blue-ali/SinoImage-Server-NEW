@@ -13,6 +13,8 @@ public interface IContentService {
 	
 	public void saveContent(final BatchInfo batchInfo) throws Exception;
 	
+	public void saveContent(final BatchInfo batchInfo, final FileInfo fileInfo) throws Exception;
+	
 	public void updContent(final BatchInfo batchInfo, final List<FileInfo> files) throws Exception;
 	
 	public void delContent(final BatchInfo batchInfo, final List<FileInfo> delFiles) throws Exception;

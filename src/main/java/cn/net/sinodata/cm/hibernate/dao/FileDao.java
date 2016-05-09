@@ -31,9 +31,9 @@ public class FileDao extends GenericDao<FileInfo>{
 	
 	@SuppressWarnings("unchecked")
 	public List<FileInfo> queryListByBatchId(String batchId){
-		String hql = "from FileInfo where batchId=?";
+		String hql = "from FileInfo where batchId=? and last_operation<>?";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		setQueryParams(query, new String[]{batchId});
+		setQueryParams(query, new String[]{batchId, EOperType.eDEL.toString()});
 		return query.list();
 	}
 	

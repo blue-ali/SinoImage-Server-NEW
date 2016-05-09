@@ -15,9 +15,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
-import cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgBatchInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.MsgFileInfo;
+import cn.net.sinodata.cm.pb.bean.ResultInfo;
 import cn.net.sinodata.cm.util.DateFormatUtil;
 import cn.net.sinodata.cm.util.Util;
 
@@ -50,9 +50,6 @@ public class BatchInfo implements Serializable {
 	/** 批次状态 */
 	@Column(name = "state")
 	private int state;
-	/** 传输模式 */
-	@Transient
-	private ETransMode transMode;
 	/** 密码 */
 	@Transient
 	private String password;
@@ -61,6 +58,10 @@ public class BatchInfo implements Serializable {
 	private List<FileInfo> fileInfos = new ArrayList<FileInfo>();
 	@Transient
 	private EOperType operation = EOperType.eFROM_SERVER_NOTCHANGE;
+	
+	/** 返回结果，用于获取批次等操作 */
+	@Transient
+	private ResultInfo resultInfo;
 	
 	/** 上一次操作 */
 	@Column(name = "last_operation")
@@ -153,14 +154,6 @@ public class BatchInfo implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public ETransMode getTransMode() {
-		return transMode;
-	}
-
-	public void setTransMode(ETransMode transMode) {
-		this.transMode = transMode;
-	}
 	
 	public String getLastOperation() {
 		return lastOperation;
@@ -168,6 +161,16 @@ public class BatchInfo implements Serializable {
 
 	public void setLastOperation(String lastOperation) {
 		this.lastOperation = lastOperation;
+	}
+
+	public ResultInfo getResultInfo() {
+		if(resultInfo == null)
+			resultInfo = new ResultInfo();
+		return resultInfo;
+	}
+
+	public void setResultInfo(ResultInfo resultInfo) {
+		this.resultInfo = resultInfo;
 	}
 
 	public static BatchInfo fromNetMsg(MsgBatchInfo input) throws ParseException {
@@ -185,7 +188,6 @@ public class BatchInfo implements Serializable {
 		batchInfo.setOperation(input.getOperation8());
 		batchInfo.setVersion(String.valueOf(input.getVersion2()));
 		batchInfo.setPassword(input.getPassword16());
-		batchInfo.setTransMode(input.getTransMode());
 		batchInfo.setLastOperation(input.getOperation8().toString());
 		List<MsgFileInfo> mFileInfos = input.getFileInfos9List();
 		if (mFileInfos != null) {
@@ -194,7 +196,6 @@ public class BatchInfo implements Serializable {
 				batchInfo.getFileInfos().add(fileInfo);
 			}
 		}
-
 		return batchInfo;
 	}
 
@@ -218,7 +219,7 @@ public class BatchInfo implements Serializable {
 		mBuilder.setBusiSysId11(this.getSysId());
 		mBuilder.setVersion2(Integer.valueOf(this.getVersion()));
 		mBuilder.setOperation8(EOperType.eFROM_SERVER_NOTCHANGE);
-		mBuilder.setTransMode(this.getTransMode());
+//		mBuilder.setTransMode(this.getTransMode());
 		// mBuilder.setOperation(this.getOperation());
 		List<FileInfo> fileInfos = this.getFileInfos();
 		if (fileInfos != null) {
@@ -230,19 +231,7 @@ public class BatchInfo implements Serializable {
 		} else {
 			// ret.setFileCount(0); // 注：这个字段，或者应该清除，或者应该保留，保留的话的作用是作为校验作用
 		}
-		// ret.setBranch(this.getbranch());
-		// ret.setTorgId(this.getTorgID());
-		// ret.setBusiSysId(this.getBusiSysID());
-		// ret.setBusiTypeId(this.getBusiSysID());
-		// ret.setTellerNO(this.getTellNO());
-		// ret.setBarCode(this.getBarCode());
-		// ret.setSourceIP(this.getSourceIP());
-		// ret.setMachineID(this.getMachineID());
-		// ret.setPassword(this.getPassword());
-		// if (this.getResultInfo() != null)
-		// {
-		// ret.setResultInfo(this.getResultInfo().ToNetMsg());
-		// }
+		mBuilder.setResultInfo17(this.getResultInfo().toNetMsg());
 		return mBuilder.build();
 	}
 

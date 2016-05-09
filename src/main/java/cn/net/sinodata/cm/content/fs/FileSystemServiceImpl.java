@@ -69,6 +69,12 @@ public class FileSystemServiceImpl extends BaseContentService{
 		return null;
 	}
 
+	/**
+	 * 给fileInfos增加文件内容
+	 * @param fileInfos
+	 * @param files
+	 * @throws IOException
+	 */
 	private void file2FileInfo(List<FileInfo> fileInfos, List<File> files) throws IOException{
 		Map<String, FileInfo> map = new HashMap<String, FileInfo>();
 		for (FileInfo fileInfo : fileInfos) {
@@ -154,9 +160,17 @@ public class FileSystemServiceImpl extends BaseContentService{
 
 	@Override
 	public void saveContent(BatchInfo batchInfo) throws Exception {
-		String fileName = getBatchNameNextVersion(batchInfo);
-		// info.RemoveFilesData();
-		byte[] data = batchInfo.toNetMsg().toByteArray();
-		FileUtil.byte2file(data, fileName);
+		String batchPath = buildPath(batchInfo);
+		List<FileInfo> fileInfos = batchInfo.getFileInfos();
+		for (FileInfo fileInfo : fileInfos) {
+			FileUtil.byte2file(fileInfo.getData(), batchPath + fileInfo.getFileId());
+		}
 	}
+
+	@Override
+	public void saveContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
+		String fileName = buildPath(batchInfo) + fileInfo.getFileId();
+		FileUtil.byte2file(fileInfo.getData(), fileName);
+	}
+
 }

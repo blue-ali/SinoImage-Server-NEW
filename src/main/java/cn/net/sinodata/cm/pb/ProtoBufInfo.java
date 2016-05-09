@@ -172,108 +172,6 @@ public final class ProtoBufInfo {
   }
 
   /**
-   * Protobuf enum {@code DocScanner.Bean.pb.ETransMode}
-   *
-   * <pre>
-   *传输模式
-   * </pre>
-   */
-  public enum ETransMode
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <code>FULL = 1;</code>
-     *
-     * <pre>
-     * 批次和内容一起传输，只通信一次，不支持续传
-     * </pre>
-     */
-    FULL(0, 1),
-    /**
-     * <code>BROKE = 2;</code>
-     *
-     * <pre>
-     * 续传模式，批次和内容分开传输 
-     * </pre>
-     */
-    BROKE(1, 2),
-    ;
-
-    /**
-     * <code>FULL = 1;</code>
-     *
-     * <pre>
-     * 批次和内容一起传输，只通信一次，不支持续传
-     * </pre>
-     */
-    public static final int FULL_VALUE = 1;
-    /**
-     * <code>BROKE = 2;</code>
-     *
-     * <pre>
-     * 续传模式，批次和内容分开传输 
-     * </pre>
-     */
-    public static final int BROKE_VALUE = 2;
-
-
-    public final int getNumber() { return value; }
-
-    public static ETransMode valueOf(int value) {
-      switch (value) {
-        case 1: return FULL;
-        case 2: return BROKE;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<ETransMode>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static com.google.protobuf.Internal.EnumLiteMap<ETransMode>
-        internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<ETransMode>() {
-            public ETransMode findValueByNumber(int number) {
-              return ETransMode.valueOf(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      return getDescriptor().getValues().get(index);
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return cn.net.sinodata.cm.pb.ProtoBufInfo.getDescriptor().getEnumTypes().get(1);
-    }
-
-    private static final ETransMode[] VALUES = values();
-
-    public static ETransMode valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int index;
-    private final int value;
-
-    private ETransMode(int index, int value) {
-      this.index = index;
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:DocScanner.Bean.pb.ETransMode)
-  }
-
-  /**
    * Protobuf enum {@code DocScanner.Bean.pb.EPrivilege}
    *
    * <pre>
@@ -352,7 +250,7 @@ public final class ProtoBufInfo {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return cn.net.sinodata.cm.pb.ProtoBufInfo.getDescriptor().getEnumTypes().get(2);
+      return cn.net.sinodata.cm.pb.ProtoBufInfo.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final EPrivilege[] VALUES = values();
@@ -451,7 +349,7 @@ public final class ProtoBufInfo {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return cn.net.sinodata.cm.pb.ProtoBufInfo.getDescriptor().getEnumTypes().get(3);
+      return cn.net.sinodata.cm.pb.ProtoBufInfo.getDescriptor().getEnumTypes().get(2);
     }
 
     private static final EResultStatus[] VALUES = values();
@@ -10775,16 +10673,6 @@ public final class ProtoBufInfo {
      */
     com.google.protobuf.ByteString
         getExShenheRemark20Bytes();
-
-    // required .DocScanner.Bean.pb.ETransMode TransMode = 21;
-    /**
-     * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-     */
-    boolean hasTransMode();
-    /**
-     * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-     */
-    cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode getTransMode();
   }
   /**
    * Protobuf type {@code DocScanner.Bean.pb.MsgBatchInfo}
@@ -10947,17 +10835,6 @@ public final class ProtoBufInfo {
             case 162: {
               bitField0_ |= 0x00020000;
               exShenheRemark20_ = input.readBytes();
-              break;
-            }
-            case 168: {
-              int rawValue = input.readEnum();
-              cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode value = cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(21, rawValue);
-              } else {
-                bitField0_ |= 0x00040000;
-                transMode_ = value;
-              }
               break;
             }
           }
@@ -11824,22 +11701,6 @@ public final class ProtoBufInfo {
       }
     }
 
-    // required .DocScanner.Bean.pb.ETransMode TransMode = 21;
-    public static final int TRANSMODE_FIELD_NUMBER = 21;
-    private cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode transMode_;
-    /**
-     * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-     */
-    public boolean hasTransMode() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-     */
-    public cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode getTransMode() {
-      return transMode_;
-    }
-
     private void initFields() {
       author1_ = "";
       version2_ = 0;
@@ -11860,7 +11721,6 @@ public final class ProtoBufInfo {
       editable18_ = false;
       exShenheResult19_ = 0;
       exShenheRemark20_ = "";
-      transMode_ = cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode.FULL;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -11888,10 +11748,6 @@ public final class ProtoBufInfo {
         return false;
       }
       if (!hasPassword16()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasTransMode()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -11970,9 +11826,6 @@ public final class ProtoBufInfo {
       }
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         output.writeBytes(20, getExShenheRemark20Bytes());
-      }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        output.writeEnum(21, transMode_.getNumber());
       }
       getUnknownFields().writeTo(output);
     }
@@ -12058,10 +11911,6 @@ public final class ProtoBufInfo {
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(20, getExShenheRemark20Bytes());
-      }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(21, transMode_.getNumber());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -12227,8 +12076,6 @@ public final class ProtoBufInfo {
         bitField0_ = (bitField0_ & ~0x00020000);
         exShenheRemark20_ = "";
         bitField0_ = (bitField0_ & ~0x00040000);
-        transMode_ = cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode.FULL;
-        bitField0_ = (bitField0_ & ~0x00080000);
         return this;
       }
 
@@ -12342,10 +12189,6 @@ public final class ProtoBufInfo {
           to_bitField0_ |= 0x00020000;
         }
         result.exShenheRemark20_ = exShenheRemark20_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00040000;
-        }
-        result.transMode_ = transMode_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -12468,9 +12311,6 @@ public final class ProtoBufInfo {
           exShenheRemark20_ = other.exShenheRemark20_;
           onChanged();
         }
-        if (other.hasTransMode()) {
-          setTransMode(other.getTransMode());
-        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -12497,10 +12337,6 @@ public final class ProtoBufInfo {
           return false;
         }
         if (!hasPassword16()) {
-          
-          return false;
-        }
-        if (!hasTransMode()) {
           
           return false;
         }
@@ -14280,42 +14116,6 @@ public final class ProtoBufInfo {
   }
   bitField0_ |= 0x00040000;
         exShenheRemark20_ = value;
-        onChanged();
-        return this;
-      }
-
-      // required .DocScanner.Bean.pb.ETransMode TransMode = 21;
-      private cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode transMode_ = cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode.FULL;
-      /**
-       * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-       */
-      public boolean hasTransMode() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-       */
-      public cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode getTransMode() {
-        return transMode_;
-      }
-      /**
-       * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-       */
-      public Builder setTransMode(cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00080000;
-        transMode_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required .DocScanner.Bean.pb.ETransMode TransMode = 21;</code>
-       */
-      public Builder clearTransMode() {
-        bitField0_ = (bitField0_ & ~0x00080000);
-        transMode_ = cn.net.sinodata.cm.pb.ProtoBufInfo.ETransMode.FULL;
         onChanged();
         return this;
       }
@@ -18276,7 +18076,7 @@ public final class ProtoBufInfo {
       "ion7\030\007 \002(\005\022\022\n\nSourceIP42\030* \001(\t\022\023\n\013Machin" +
       "eID44\030, \001(\t\"8\n\024MsgOptionQueryBatchs\022\r\n\005U",
       "ser1\030\001 \002(\t\022\021\n\tPassword2\030\002 \002(\t\",\n\027MsgRspO" +
-      "ptionQueryBatchs\022\021\n\tBatchNOs2\030\002 \003(\t\"\241\004\n\014" +
+      "ptionQueryBatchs\022\021\n\tBatchNOs2\030\002 \003(\t\"\356\003\n\014" +
       "MsgBatchInfo\022\017\n\007Author1\030\001 \002(\t\022\020\n\010Version" +
       "2\030\002 \002(\005\022\023\n\013CreateTime4\030\004 \002(\t\022\017\n\007Remark5\030" +
       "\005 \001(\t\022\020\n\010BatchNO6\030\006 \002(\t\022\016\n\006Title7\030\007 \001(\t\022" +
@@ -18289,24 +18089,22 @@ public final class ProtoBufInfo {
       "\002(\t\0227\n\014ResultInfo17\030\021 \001(\0132!.DocScanner.B" +
       "ean.pb.MsgResultInfo\022\022\n\nEditable18\030\022 \001(\010" +
       "\022\030\n\020exShenheResult19\030\023 \001(\005\022\030\n\020exShenheRe" +
-      "mark20\030\024 \001(\t\0221\n\tTransMode\030\025 \002(\0162\036.DocSca" +
-      "nner.Bean.pb.ETransMode\"B\n\016MsgAccountInf" +
-      "o\022\r\n\005User1\030\001 \002(\t\022\021\n\tPassword2\030\002 \002(\t\022\016\n\006O" +
-      "rgID3\030\003 \002(\t\"D\n\016MsgBatchHisQry\022\r\n\005User1\030\001" +
-      " \002(\t\022\021\n\tPassword2\030\002 \002(\t\022\020\n\010BatchNO3\030\003 \002(" +
-      "\t\"C\n\016MsgBatchHisRsp\0221\n\007batchs1\030\001 \003(\0132 .D",
-      "ocScanner.Bean.pb.MsgBatchInfo\"\023\n\021MsgSer" +
-      "versListQry\"(\n\021MsgServersListRsp\022\023\n\013serv" +
-      "erlist1\030\001 \003(\t\"\022\n\020MsgServerInfoQry\"#\n\020Msg" +
-      "ServerInfoRsp\022\017\n\007Burden1\030\001 \002(\005*v\n\tEOperT" +
-      "ype\022\032\n\026eFROM_SERVER_NOTCHANGE\020\000\022\010\n\004eADD\020" +
-      "\001\022\010\n\004eDEL\020\002\022\010\n\004eUPD\020\004\022\014\n\010eUPDNOTE\020\010\022\020\n\014e" +
-      "UPDATEBASIC\020\020\022\017\n\013eUPDATEFILE\020 *!\n\nETrans" +
-      "Mode\022\010\n\004FULL\020\001\022\t\n\005BROKE\020\002*:\n\nEPrivilege\022" +
-      "\t\n\005eNone\020\000\022\t\n\005eView\020\001\022\013\n\007eUpdate\020\002\022\t\n\005eF" +
-      "ull\020\004*;\n\rEResultStatus\022\014\n\010eSuccess\020\000\022\013\n\007",
-      "eFailed\020\001\022\017\n\013eOnProgress\020\002B%\n\025cn.net.sin" +
-      "odata.cm.pbB\014ProtoBufInfo"
+      "mark20\030\024 \001(\t\"B\n\016MsgAccountInfo\022\r\n\005User1\030" +
+      "\001 \002(\t\022\021\n\tPassword2\030\002 \002(\t\022\016\n\006OrgID3\030\003 \002(\t" +
+      "\"D\n\016MsgBatchHisQry\022\r\n\005User1\030\001 \002(\t\022\021\n\tPas" +
+      "sword2\030\002 \002(\t\022\020\n\010BatchNO3\030\003 \002(\t\"C\n\016MsgBat" +
+      "chHisRsp\0221\n\007batchs1\030\001 \003(\0132 .DocScanner.B" +
+      "ean.pb.MsgBatchInfo\"\023\n\021MsgServersListQry",
+      "\"(\n\021MsgServersListRsp\022\023\n\013serverlist1\030\001 \003" +
+      "(\t\"\022\n\020MsgServerInfoQry\"#\n\020MsgServerInfoR" +
+      "sp\022\017\n\007Burden1\030\001 \002(\005*v\n\tEOperType\022\032\n\026eFRO" +
+      "M_SERVER_NOTCHANGE\020\000\022\010\n\004eADD\020\001\022\010\n\004eDEL\020\002" +
+      "\022\010\n\004eUPD\020\004\022\014\n\010eUPDNOTE\020\010\022\020\n\014eUPDATEBASIC" +
+      "\020\020\022\017\n\013eUPDATEFILE\020 *:\n\nEPrivilege\022\t\n\005eNo" +
+      "ne\020\000\022\t\n\005eView\020\001\022\013\n\007eUpdate\020\002\022\t\n\005eFull\020\004*" +
+      ";\n\rEResultStatus\022\014\n\010eSuccess\020\000\022\013\n\007eFaile" +
+      "d\020\001\022\017\n\013eOnProgress\020\002B%\n\025cn.net.sinodata." +
+      "cm.pbB\014ProtoBufInfo"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18354,7 +18152,7 @@ public final class ProtoBufInfo {
           internal_static_DocScanner_Bean_pb_MsgBatchInfo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_DocScanner_Bean_pb_MsgBatchInfo_descriptor,
-              new java.lang.String[] { "Author1", "Version2", "CreateTime4", "Remark5", "BatchNO6", "Title7", "Operation8", "FileInfos9", "OrgID10", "BusiSysId11", "BusiTypeId12", "BarCode13", "SourceIP14", "MachineID15", "Password16", "ResultInfo17", "Editable18", "ExShenheResult19", "ExShenheRemark20", "TransMode", });
+              new java.lang.String[] { "Author1", "Version2", "CreateTime4", "Remark5", "BatchNO6", "Title7", "Operation8", "FileInfos9", "OrgID10", "BusiSysId11", "BusiTypeId12", "BarCode13", "SourceIP14", "MachineID15", "Password16", "ResultInfo17", "Editable18", "ExShenheResult19", "ExShenheRemark20", });
           internal_static_DocScanner_Bean_pb_MsgAccountInfo_descriptor =
             getDescriptor().getMessageTypes().get(7);
           internal_static_DocScanner_Bean_pb_MsgAccountInfo_fieldAccessorTable = new

@@ -241,7 +241,7 @@ public class FileInfo implements Serializable{
 		mBuilder.setFileSize10(this.getFileSize());
 //		mBuilder.setFileURLBytes(this.getfile)
 		mBuilder.setExFaPiaoCode16(this.getInvoiceNo());
-		mBuilder.setFileURL7(this.getFileUrl());
+		//mBuilder.setFileURL7(this.getFileUrl());
 		mBuilder.setVersion2(this.getVersion());
 		mBuilder.setCategory14(this.getCategory());
 		if (this.getData() != null)	{

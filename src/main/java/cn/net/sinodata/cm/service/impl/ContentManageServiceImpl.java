@@ -40,9 +40,10 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	public BatchInfo getBatch(String batchId) throws Exception {
 		BatchInfo batchInfo = batchDao.queryById(batchId);
 		List<FileInfo> fileInfos = fileDao.queryListByBatchId(batchId);
-		for (FileInfo fileInfo : fileInfos) {
-			fileInfo.setFileUrl(GlobalVars.download_url + buildRelaPath(batchInfo) + fileInfo.getFileName());
-		}
+		batchInfo.setFileInfos(fileInfos);
+		
+		contentService.getContent(batchInfo);
+		
 		batchInfo.setFileInfos(fileInfos);
 		return batchInfo;
 	}
@@ -239,6 +240,9 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	public void submitFile(FileInfo fileInfo) throws Exception {
 		fileInfo.setState(EnumState.FINISH.ordinal());
 		fileDao.save(fileInfo);
+		BatchInfo batchInfo = batchDao.queryById(fileInfo.getBatchId());
+		batchInfo.addFileInfo(fileInfo);
+		contentService.saveContent(batchInfo, fileInfo);
 	}
 
 	/**

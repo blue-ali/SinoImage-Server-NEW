@@ -25,21 +25,14 @@ public abstract class BaseContentService implements IContentService {
 		
 		StringBuffer sb = new StringBuffer(GlobalVars.local_root_path);
 		sb.append(SEPARATOR);
-		String sid = batchInfo.getSysId();
-		String oid = batchInfo.getOrgId();
-		if(sid==null||"".equals(sid)){
-			sid="1212";
-		}
-		if(oid==null||"".equals(oid)){
-			oid="test";
-		}
-		sb.append(sid);
+		sb.append(batchInfo.getSysId());
 		sb.append(SEPARATOR);
 		sb.append(DateUtil.format(batchInfo.getCreateTime(), GlobalVars.fs_date_format));
 		sb.append(SEPARATOR);
-		sb.append(oid);
+		sb.append(batchInfo.getOrgId());
 		sb.append(SEPARATOR);
 		sb.append(batchInfo.getBatchId());
+		sb.append(SEPARATOR);
 		return sb.toString();
 	}
 	
