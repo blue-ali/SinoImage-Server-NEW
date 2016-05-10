@@ -1,0 +1,2 @@
+DROP TABLE cm_file_info;
+CREATE TABLE cm_file_info ( fileid varchar(20) NOT NULL, batchid varchar(50) NOT NULL, filename varchar(100) NOT NULL, MD5 varchar(100), createtime timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NULL, creator varchar(20), category varchar(2), filesize bigint, verify_result int, verify_remark varchar(255), invoice_no varchar(20), state int, last_operation varchar(20), PRIMARY KEY (batchid, fileid) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
