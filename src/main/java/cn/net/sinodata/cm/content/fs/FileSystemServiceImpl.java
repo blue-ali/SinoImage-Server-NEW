@@ -16,21 +16,25 @@ import cn.net.sinodata.cm.hibernate.po.FileInfo;
 import cn.net.sinodata.framework.util.FileUtil;
 
 @Service("fsService")
-public class FileSystemServiceImpl extends BaseContentService{
+public class FileSystemServiceImpl extends BaseContentService {
 
 	@Override
-	public Object ensureFolder(String path, boolean createFolder) {
-		File file = new File(path);
-		
-		if(!file.exists()){
-			file.mkdirs();
+	public Object ensureFolder(String path, boolean createFolder) throws Exception {
+		File dir = new File(path);
+
+		if (!dir.exists()) {
+			if(createFolder){
+				dir.mkdirs();
+			}else{
+				throw new Exception("路径" + dir.getAbsolutePath() + "不存在");
+			}
 		}
-		return file;
+		return dir;
 	}
 
 	@Override
 	public void regist() {
-		
+
 	}
 
 	@Override
@@ -42,16 +46,15 @@ public class FileSystemServiceImpl extends BaseContentService{
 			FileUtil.byte2file(fileInfo.getData(), path, fileInfo.getFileName());
 		}
 	}
-	
 
 	@Override
 	public Object getContent(BatchInfo batchInfo) throws Exception {
 		String path = buildPath(batchInfo);
-//		path = "f://tmp//download";
+		// path = "f://tmp//download";
 		File dir = new File(path);
-		if(!dir.exists()){
+		if (!dir.exists()) {
 			throw new Exception("路径不存在：" + path);
-		}else{
+		} else {
 			List<File> files = Arrays.asList(dir.listFiles());
 			List<FileInfo> fileInfos = batchInfo.getFileInfos();
 			file2FileInfo(fileInfos, files);
@@ -67,90 +70,63 @@ public class FileSystemServiceImpl extends BaseContentService{
 
 	/**
 	 * 给fileInfos增加文件内容
+	 * 
 	 * @param fileInfos
 	 * @param files
 	 * @throws IOException
 	 */
-	private void file2FileInfo(List<FileInfo> fileInfos, List<File> files) throws IOException{
+	private void file2FileInfo(List<FileInfo> fileInfos, List<File> files) throws IOException {
 		Map<String, FileInfo> map = new HashMap<String, FileInfo>();
 		for (FileInfo fileInfo : fileInfos) {
 			map.put(fileInfo.getFileId(), fileInfo);
 		}
 		for (File file : files) {
 			FileInfo fileInfo = map.get(file.getName());
-			if(fileInfo != null)
-				fileInfo.setData(FileUtil.file2byte(file));;
+			if (fileInfo != null)
+				fileInfo.setData(FileUtil.file2byte(file));
+			;
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception {
-//		String path = "F:\\tmp\\download";
-//		File dir = new File(path);
-//		if(!dir.exists()){
-//			throw new Exception("·�������ڣ�" + path);
-//		}else{
-//			File[] files = dir.listFiles();
-//			List<File> fileList = Arrays.asList(files);
-//			
-//		}
+		// String path = "F:\\tmp\\download";
+		// File dir = new File(path);
+		// if(!dir.exists()){
+		// throw new Exception("·�������ڣ�" + path);
+		// }else{
+		// File[] files = dir.listFiles();
+		// List<File> fileList = Arrays.asList(files);
+		//
+		// }
 		BatchInfo batchInfo = new BatchInfo();
 		FileInfo fileInfo = new FileInfo();
 		fileInfo.setData(FileUtil.file2byte("F:\\tmp\\download\\001"));
 		fileInfo.setFileId("001");
-		
+
 		FileInfo fileInfo1 = new FileInfo();
 		fileInfo1.setData(FileUtil.file2byte("F:\\tmp\\download\\002"));
 		fileInfo1.setFileId("002");
-		
+
 		batchInfo.addFileInfo(fileInfo);
 		batchInfo.addFileInfo(fileInfo1);
-		
+
 		new FileSystemServiceImpl().getContent(batchInfo);
 	}
 
 	@Override
-	public void updContent(BatchInfo batchInfo, List<FileInfo> files) throws Exception {
-		String path = buildPath(batchInfo);
-		ensureFolder(path, true);
-		List<FileInfo> fileInfos = batchInfo.getFileInfos();
-		for (FileInfo fileInfo : fileInfos) {
-			FileUtil.byte2file(fileInfo.getData(), path, fileInfo.getFileId());
-		}
-		
-	}
-	
-	@Override
-	public void updContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
+	public void saveContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
 		String path = buildPath(batchInfo);
 		ensureFolder(path, true);
 		FileUtil.byte2file(fileInfo.getData(), path, fileInfo.getFileName());
 	}
 
 	@Override
-	public void delContent(BatchInfo batchInfo, List<FileInfo> delFiles) throws Exception {
+	public void delContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
 		String path = buildPath(batchInfo);
 		ensureFolder(path, true);
-		List<FileInfo> fileInfos = batchInfo.getFileInfos();
-		for (FileInfo fileInfo : fileInfos) {
-			File file = new File(path + fileInfo.getFileId());
-			if(file.exists())
-				file.delete();
-		}
-	}
-
-	@Override
-	public void saveContent(BatchInfo batchInfo) throws Exception {
-		String batchPath = buildPath(batchInfo);
-		List<FileInfo> fileInfos = batchInfo.getFileInfos();
-		for (FileInfo fileInfo : fileInfos) {
-			FileUtil.byte2file(fileInfo.getData(), batchPath + fileInfo.getFileId());
-		}
-	}
-
-	@Override
-	public void saveContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
-		String fileName = buildPath(batchInfo) + fileInfo.getFileId();
-		FileUtil.byte2file(fileInfo.getData(), fileName);
+		File file = new File(path + fileInfo.getFileId());
+		if (file.exists())
+			file.delete();
 	}
 
 }

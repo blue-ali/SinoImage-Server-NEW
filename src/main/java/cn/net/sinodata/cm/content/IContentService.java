@@ -7,17 +7,13 @@ import cn.net.sinodata.cm.hibernate.po.FileInfo;
 
 public interface IContentService {
 
-	public Object ensureFolder(final String path, final boolean createFolder);
+	public Object ensureFolder(final String path, final boolean createFolder) throws Exception;
 	
 	public void addContent(final BatchInfo batchInfo) throws Exception;
 	
-	public void saveContent(final BatchInfo batchInfo) throws Exception;
-	
 	public void saveContent(final BatchInfo batchInfo, final FileInfo fileInfo) throws Exception;
 	
-	public void updContent(final BatchInfo batchInfo, final List<FileInfo> files) throws Exception;
-	
-	public void delContent(final BatchInfo batchInfo, final List<FileInfo> delFiles) throws Exception;
+	public void delContent(final BatchInfo batchInfo, final FileInfo fileInfo) throws Exception;
 	
 	public Object getContent(final BatchInfo batchInfo) throws Exception;
 	
@@ -26,11 +22,4 @@ public interface IContentService {
 	 */
 	public void regist();
 
-	/**
-	 * 更新文件内容
-	 * @param batchInfo
-	 * @param fileInfo
-	 * @throws Exception
-	 */
-	void updContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception;
 }

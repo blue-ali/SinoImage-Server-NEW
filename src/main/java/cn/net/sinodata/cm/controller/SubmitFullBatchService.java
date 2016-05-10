@@ -96,22 +96,7 @@ public class SubmitFullBatchService extends BaseServletService {
 			MsgBatchInfo mbatch = MsgBatchInfo.parseFrom(item.getInputStream());
 			BatchInfo batchInfo = BatchInfo.fromNetMsg(mbatch);
 			logger.info("获得批次元数据信息, batchId:[" + batchInfo.getBatchId() + "]");
-			
-			// check invoice
-			//servlet单独校验每张发票信息，不在这里处理
-			/*List<InvoiceInfo> invoiceInfos = manageService.checkInvoice(batchInfo);
-			if (!Util.isListEmpty(invoiceInfos)) {
-				StringBuilder sb = new StringBuilder();
-				for (InvoiceInfo invoiceInfo : invoiceInfos) {
-					sb.append(String.format("发票号码%s，曾在%s,在批次%s由%s已经提交过\r\n", invoiceInfo.getInvoiceNo(),
-							invoiceInfo.getCreatetime(), invoiceInfo.getBatchId(), invoiceInfo.getAuthor()));
-				}
-				getResult().setStatus(EResultStatus.eFailed);
-				getResult().setMsg(sb.toString());
-			} else {
-				manageService.submitBatchContent(batchInfo);	//提交批次信息和内容
-				getResult().setStatus(EResultStatus.eSuccess);
-			}*/
+
 			manageService.submitBatchContent(batchInfo);	//提交批次信息和内容
 			getResult().setStatus(EResultStatus.eSuccess);
 		} else {

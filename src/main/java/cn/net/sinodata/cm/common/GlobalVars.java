@@ -8,5 +8,6 @@ public class GlobalVars {
 	public static String local_root_path = "F:\\sinocm-image";
 	public static String download_url = "";
 	public static Object osType = "";
+	public static boolean isDebugEnabled;
 
 }

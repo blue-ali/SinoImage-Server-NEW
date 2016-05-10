@@ -1,0 +1,1 @@
+格式化日志，是否用threadlocal保存batchInfo

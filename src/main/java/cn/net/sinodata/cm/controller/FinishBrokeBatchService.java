@@ -27,6 +27,7 @@ import cn.net.sinodata.cm.pb.bean.ResultInfo;
 import cn.net.sinodata.cm.util.OpeMetaFileUtils;
 
 /**
+ * 完成批次请求，用于断点续传模式，批次所有内容都提交完成后做确认并修改批次状态
  * @author manan
  *
  */
@@ -35,7 +36,7 @@ import cn.net.sinodata.cm.util.OpeMetaFileUtils;
 public class FinishBrokeBatchService extends BaseServletService {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		logger.info("");
 		String batchId = request.getParameter("batchNo");
 		try {
 			manageService.finishBatch(batchId);

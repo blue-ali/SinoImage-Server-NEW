@@ -79,6 +79,11 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	@Override
 	public void submitBatchContent(BatchInfo batchInfo) throws Exception {
 		List<FileInfo> fileInfos = batchInfo.getFileInfos();
+		for (FileInfo fileInfo : fileInfos) {
+			submitFile(batchInfo, fileInfo);
+		}
+		
+		/*List<FileInfo> fileInfos = batchInfo.getFileInfos();
 
 		//筛选出要删除的文件
 		List<FileInfo> delFiles = new ArrayList<FileInfo>();
@@ -93,7 +98,7 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 		fileDao.save(fileInfos);
 		fileDao.delete(delFiles);
 		contentService.updContent(batchInfo, fileInfos);
-		contentService.delContent(batchInfo, delFiles);
+		contentService.delContent(batchInfo, delFiles);*/
 	}
 
 	/**
@@ -158,7 +163,11 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	public void submitFile(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
 		fileInfo.setState(EnumState.FINISH.ordinal());
 		fileDao.save(fileInfo);
-		contentService.saveContent(batchInfo, fileInfo);
+		if(fileInfo.getOperation() == EOperType.eDEL){
+			contentService.delContent(batchInfo, fileInfo);
+		}else if(fileInfo.getOperation() == EOperType.eUPDATEFILE){
+			contentService.saveContent(batchInfo, fileInfo);
+		}
 	}
 
 	/**
