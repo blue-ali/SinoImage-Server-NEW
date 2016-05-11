@@ -7,6 +7,7 @@ import cn.net.sinodata.cm.hibernate.dao.BatchDao;
 import cn.net.sinodata.cm.hibernate.dao.FileDao;
 import cn.net.sinodata.cm.hibernate.dao.InvoiceDao;
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
+import cn.net.sinodata.cm.log.CmLogger;
 import cn.net.sinodata.cm.util.Util;
 import cn.net.sinodata.framework.exception.SinoException;
 
@@ -22,6 +23,8 @@ public abstract class BaseService {
 //	protected CmDao cmDao;
 	@Resource
 	protected IContentService contentService;
+	
+	protected CmLogger logger = CmLogger.getLogger(this.getClass());
 
 	protected String separator = "/";
 	

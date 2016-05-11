@@ -23,15 +23,15 @@ public abstract class GenericDao<T> implements IGenericDao<T> {
 	public void save(T t) {
 		sessionFactory.getCurrentSession().saveOrUpdate(t);
 	}
-	
+
 	@Override
 	public void save(List<T> list) {
 		for (Object t : list) {
 			sessionFactory.getCurrentSession().saveOrUpdate(t);
 		}
-		
+
 	}
-	
+
 	@Override
 	public void insert(T t) {
 		sessionFactory.getCurrentSession().save(t);
@@ -48,7 +48,7 @@ public abstract class GenericDao<T> implements IGenericDao<T> {
 			sessionFactory.getCurrentSession().delete(t);
 		}
 	}
-	
+
 	@Override
 	public void update(T t) {
 		sessionFactory.getCurrentSession().update(t);
@@ -88,11 +88,14 @@ public abstract class GenericDao<T> implements IGenericDao<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> queryForList(final String hql, final Object[] params,
-			final int recordNum) {
+	public List<T> queryForList(final String hql, final Object[] params, final int recordNum) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		setQueryParams(query, params);
 		return query.setFirstResult(0).setMaxResults(recordNum).list();
+	}
+
+	protected void setQueryParams(Query query, String paramName, Object paramValue) {
+		query.setParameter(paramName, paramValue);
 	}
 
 	protected void setQueryParams(Query query, Object[] params) {
@@ -100,11 +103,11 @@ public abstract class GenericDao<T> implements IGenericDao<T> {
 			return;
 		}
 		for (int i = 0; i < params.length; i++) {
-			query.setParameter(i, params[i]);
+			query.setParameter(String.valueOf(i), params[i]);
 		}
 	}
-	
-	public void evict(Object obj){
+
+	public void evict(Object obj) {
 		sessionFactory.getCurrentSession().evict(obj);
 	}
 

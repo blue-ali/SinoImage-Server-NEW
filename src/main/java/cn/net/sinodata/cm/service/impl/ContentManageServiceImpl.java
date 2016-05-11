@@ -13,18 +13,17 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sun.media.jfxmedia.logging.Logger;
+
 import cn.net.sinodata.cm.common.EnumState;
-import cn.net.sinodata.cm.common.GlobalVars;
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
 import cn.net.sinodata.cm.hibernate.po.FileInfo;
 import cn.net.sinodata.cm.hibernate.po.InvoiceInfo;
 import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
 import cn.net.sinodata.cm.service.BaseService;
 import cn.net.sinodata.cm.service.IContentManagerService;
-import cn.net.sinodata.cm.util.DateUtil;
 import cn.net.sinodata.cm.util.Util;
 import cn.net.sinodata.cm.util.ZipUtil;
-import cn.net.sinodata.framework.exception.SinoException;
 
 /**
  * @author manan
@@ -132,6 +131,7 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 		//查询已有批次信息
 		BatchInfo orgiBatchInfo = batchDao.queryById(batchId);
 		if(orgiBatchInfo == null){	//批次不存在，为新上传批次
+			logger.info("批次[" + batchId + "]为新上传批次");
 			batchInfo.setState(EnumState.PROCESSING.ordinal());	//修改批次状态为处理中
 			batchDao.save(batchInfo);
 			
@@ -141,10 +141,12 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 			
 			processingFileIds = fileInfos.stream().map(fileInfo -> fileInfo.getFileId()).collect(Collectors.toList());
 		}else if(orgiBatchInfo.getState() == EnumState.PROCESSING.ordinal()){	//批次已存在, 上次提交未成功，需要继续处理剩余文件
+			logger.info("批次[" + batchId + "]已存在，上次提交失败");
 			processingFileIds = fileDao.queryProcessingFileIds(batchId);	//查询未处理文件并返回客户端
+			logger.info("批次[" + batchId + "]待处理文件：" + processingFileIds.toString());
 		}else{	//批次已存在且上次提交成功，更新批次信息
+			logger.info("批次[" + batchId + "]已存在，更新批次");
 			batchDao.evict(orgiBatchInfo);	//断开原对象连接，保存新对象
-			
 			batchInfo.setState(EnumState.PROCESSING.ordinal());	//修改批次状态为处理中
 			batchDao.save(batchInfo);
 			List<FileInfo> fileInfos = batchInfo.getFileInfos();
@@ -161,11 +163,12 @@ public class ContentManageServiceImpl extends BaseService implements IContentMan
 	 */
 	@Override
 	public void submitFile(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
+		logger.info("批次[" + batchInfo.getBatchId() + "]，提交文件：" + fileInfo.getFileName() + ", 操作类型：" + fileInfo.getOperation());
 		fileInfo.setState(EnumState.FINISH.ordinal());
 		fileDao.save(fileInfo);
 		if(fileInfo.getOperation() == EOperType.eDEL){
 			contentService.delContent(batchInfo, fileInfo);
-		}else if(fileInfo.getOperation() == EOperType.eUPDATEFILE){
+		}else if(fileInfo.getOperation() == EOperType.eADD || fileInfo.getOperation() == EOperType.eUPDATEFILE){
 			contentService.saveContent(batchInfo, fileInfo);
 		}
 	}

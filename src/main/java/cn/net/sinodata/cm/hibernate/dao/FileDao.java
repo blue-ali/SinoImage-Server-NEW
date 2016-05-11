@@ -31,7 +31,7 @@ public class FileDao extends GenericDao<FileInfo>{
 	
 	@SuppressWarnings("unchecked")
 	public List<FileInfo> queryListByBatchId(String batchId){
-		String hql = "from FileInfo where batchId=? and last_operation<>?";
+		String hql = "from FileInfo where batchId=?0 and last_operation<>?1";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		setQueryParams(query, new String[]{batchId, EOperType.eDEL.toString()});
 		return query.list();
@@ -39,7 +39,7 @@ public class FileDao extends GenericDao<FileInfo>{
 	
 	@SuppressWarnings("unchecked")
 	public List<FileInfo> queryListByBatchId4Test(String batchId){
-		String hql = "from FileInfo where batchId=?";
+		String hql = "from FileInfo where batchId=?1";
 		Query query = sessionFactory.openSession().createQuery(hql);
 		setQueryParams(query, new String[]{batchId});
 		return query.list();
@@ -47,7 +47,7 @@ public class FileDao extends GenericDao<FileInfo>{
 	
 	@SuppressWarnings("unchecked")
 	public List<String> queryProcessingFileIds(String batchId){
-		String hql = "select fileId from FileInfo where batchId=? and state=?";
+		String hql = "select fileId from FileInfo where batchId=?1 and state=?2";
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		setQueryParams(query, new Object[]{batchId, EnumState.PROCESSING.ordinal()});
 		return query.list();

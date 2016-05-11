@@ -6,12 +6,15 @@ import java.util.List;
 import cn.net.sinodata.cm.common.Constants;
 import cn.net.sinodata.cm.common.GlobalVars;
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
+import cn.net.sinodata.cm.log.CmLogger;
 import cn.net.sinodata.cm.util.DateUtil;
 import cn.net.sinodata.cm.util.Util;
 import cn.net.sinodata.framework.util.FileUtil;
 
 
 public abstract class BaseContentService implements IContentService {
+	
+	protected CmLogger logger = CmLogger.getLogger(this.getClass());
 
 	protected abstract List<? extends BaseContent> batchInfo2Content(BatchInfo batchInfo);
 	

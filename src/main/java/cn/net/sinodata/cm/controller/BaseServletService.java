@@ -3,24 +3,12 @@
  */
 package cn.net.sinodata.cm.controller;
 
-import java.io.IOException;
-
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-
-import cn.net.sinodata.cm.hibernate.po.BatchInfo;
 import cn.net.sinodata.cm.log.CmLogger;
-import cn.net.sinodata.cm.pb.ProtoBufInfo.EOperType;
 import cn.net.sinodata.cm.pb.bean.ResultInfo;
 import cn.net.sinodata.cm.service.IContentManagerService;
-import cn.net.sinodata.framework.log.SinoLogger;
 
 /**
  * servlet 基类
@@ -31,8 +19,8 @@ import cn.net.sinodata.framework.log.SinoLogger;
 @SuppressWarnings("serial")
 public class BaseServletService extends HttpServlet {
 
-//	protected CmLogger logger = CmLogger.getLogger(this.getClass());
-	Logger logger = Logger.getLogger(this.getClass());
+	protected CmLogger logger = CmLogger.getLogger(this.getClass());
+//	protected Logger logger = Logger.getLogger(this.getClass());
 
 	
 	@Resource

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.jboss.logging.NDC;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -81,6 +82,7 @@ public class SubmitFullBatchService extends BaseServletService {
 			getResult().setStatus(EResultStatus.eFailed);
 			getResult().setMsg("提交批次失败: " + e.getMessage());
 		} finally {
+			NDC.pop();
 			response.setCharacterEncoding("UTF-8");
 			getResult().toNetMsg().writeTo(response.getOutputStream());
 		}
@@ -95,10 +97,12 @@ public class SubmitFullBatchService extends BaseServletService {
 			// pb对象转换为po对象
 			MsgBatchInfo mbatch = MsgBatchInfo.parseFrom(item.getInputStream());
 			BatchInfo batchInfo = BatchInfo.fromNetMsg(mbatch);
-			logger.info("获得批次元数据信息, batchId:[" + batchInfo.getBatchId() + "]");
+			NDC.push(batchInfo.getBatchId());
+			logger.info("FULL提交批次数据, batchId:[" + batchInfo.getBatchId() + "]开始");
 
 			manageService.submitBatchContent(batchInfo);	//提交批次信息和内容
 			getResult().setStatus(EResultStatus.eSuccess);
+			logger.info("FULL提交批次数据, batchId:[" + batchInfo.getBatchId() + "]完成, 结果："+ getResult().getStatus());
 		} else {
 			// 上传数据内容不对
 			throw new Exception("上传数据内容的扩展名非" + OpeMetaFileUtils.PBDataExt + "或者" + OpeMetaFileUtils.PBOPEEXT + "服务拒绝");

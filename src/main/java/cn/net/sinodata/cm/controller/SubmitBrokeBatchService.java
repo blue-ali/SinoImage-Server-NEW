@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.log4j.NDC;
 import org.springframework.stereotype.Controller;
 
 import cn.net.sinodata.cm.hibernate.po.BatchInfo;
@@ -73,6 +74,8 @@ public class SubmitBrokeBatchService extends BaseServletService {
 			getResult().setMsg("提交批次失败: " + e.getMessage());
 			logger.error(e);
 		} finally {
+			NDC.pop();
+			//NDC.remove();
 			response.setCharacterEncoding("UTF-8");
 			getResult().toNetMsg().writeTo(response.getOutputStream());
 		}
@@ -85,20 +88,23 @@ public class SubmitBrokeBatchService extends BaseServletService {
 			// pb对象转换为po对象
 			MsgBatchInfo mbatch = MsgBatchInfo.parseFrom(item.getInputStream());
 			BatchInfo batchInfo = BatchInfo.fromNetMsg(mbatch);
+			NDC.push(batchInfo.getBatchId());	//日志中存储批次号
 			if (batchInfo.getStatus() == EBatchStatus.NEW) {
-				logger.info("获得批次信息, BatchNo:[" + batchInfo.getBatchId() + "]");
+				logger.info("提交批次信息[" + batchInfo.getBatchId() + "]开始");
 
 				List<String> processingFileIds = manageService.submitBatch(batchInfo); // 提交批次信息和文件信息
 				if (processingFileIds != null)
 					getResult().setProcessingFileIds(processingFileIds);
 				getResult().setStatus(EResultStatus.eSuccess);
+				logger.info("提交批次信息[" + batchInfo.getBatchId() + "]完成，结果：" + getResult().getStatus());
 			}else if(batchInfo.getStatus() == EBatchStatus.PROCESSING){
-				logger.info("获得批次元数据, BatchId:[" + batchInfo.getBatchId() + "]");
+				logger.info("提交批次文件数据, BatchId:[" + batchInfo.getBatchId() + "]");
 				List<FileInfo> fileInfos = batchInfo.getFileInfos();
 				for (FileInfo fileInfo : fileInfos) {
 					manageService.submitFile(batchInfo, fileInfo); // 提交批次信息和内容
 				}
 				getResult().setStatus(EResultStatus.eSuccess);
+				logger.info("提交批次文件数据[" + batchInfo.getBatchId() + "]完成，结果：" + getResult().getStatus());
 			}
 		} else {
 			// 上传数据内容不对

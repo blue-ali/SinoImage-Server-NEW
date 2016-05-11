@@ -115,13 +115,15 @@ public class FileSystemServiceImpl extends BaseContentService {
 
 	@Override
 	public void saveContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
+		logger.info("保存文件数据:" + fileInfo.getFileName() + ", 文件大小：" + fileInfo.getData().length);
 		String path = buildPath(batchInfo);
 		ensureFolder(path, true);
-		FileUtil.byte2file(fileInfo.getData(), path, fileInfo.getFileName());
+		FileUtil.byte2file(fileInfo.getData(), path, fileInfo.getFileId());
 	}
 
 	@Override
 	public void delContent(BatchInfo batchInfo, FileInfo fileInfo) throws Exception {
+		logger.info("删除文件数据:" + fileInfo.getFileName());
 		String path = buildPath(batchInfo);
 		ensureFolder(path, true);
 		File file = new File(path + fileInfo.getFileId());

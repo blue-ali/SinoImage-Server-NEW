@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.NDC;
 import org.hibernate.loader.collection.BatchingCollectionInitializer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -45,6 +46,8 @@ public class GetBatchService extends BaseServletService {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String batchId = request.getParameter("batchNo");
+		NDC.push(batchId);
+		logger.info("获取批次信息[" + batchId + "]开始");
 		BatchInfo batchInfo = null;
 		try {
 			batchInfo = manageService.getBatch(batchId);
@@ -58,6 +61,8 @@ public class GetBatchService extends BaseServletService {
 			getResult().setStatus(EResultStatus.eFailed);
 			getResult().setMsg(e.getMessage());
 		} finally {
+			logger.info("获取批次信息[" + batchId + "]完成，结果：" + getResult().getStatus());
+			NDC.pop();
 			getResult().toNetMsg().writeTo(response.getOutputStream());
 		}
 	}
